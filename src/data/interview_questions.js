@@ -1,30 +1,4 @@
-export const approved_websites = [
-    {
-        base_url: 'https://archidekt.com/',
-        site_name: 'Archidekt',
-        emoji: '<:archidekt:851756895358550016>',
-    },
-    {
-        base_url: 'https://www.moxfield.com/',
-        site_name: 'Moxfield',
-        emoji: '<:moxfield:851757319067140106>',
-    },
-    {
-        base_url: 'https://tappedout.net/',
-        site_name: 'TappedOut',
-        emoji: '<:tappedout:851757413836259369>',
-    },
-    {
-        base_url: 'https://deckstats.net/',
-        site_name: 'DeckStats',
-        emoji: '<:deckstats:851757582339014678>',
-    },
-    {
-        base_url: 'https://aetherhub.com/',
-        site_name: 'AetherHub',
-        emoji: '<:aetherhub:851757268894482462>',
-    },
-];
+import settings from "./settings";
 
 export default [
     {
@@ -33,7 +7,7 @@ export default [
             "Thanks for using DeckTuner! Let's get started. First, paste a link to your deck in the message box below using one of the following approved deck builder sites:",
         details: {
             title: '\u200b',
-            body: approved_websites
+            body: settings.approved_sites()
                 .map((x) => `${x.emoji} [${x.site_name}](${x.base_url})`)
                 .join('\n'),
         },

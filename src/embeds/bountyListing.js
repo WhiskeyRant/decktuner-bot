@@ -1,15 +1,6 @@
 import getAvatarLink from '../utils/getAvatarLink';
 import settings from '../data/settings';
 
-const clrEmj = {
-    B: '<:black:849853807646998569>',
-    G: '<:green:849853807834824724>',
-    W: '<:white:849853807680815135>',
-    U: '<:blue:849806177193295883>',
-    R: '<:red:849853807831810058>',
-    X: '<:colorless:850699473159323718>',
-};
-
 const cl = (arr) => arr.filter((x) => x); // clean array of undefined items (for fields)
 
 export default {
@@ -25,7 +16,7 @@ export default {
             },
             description: fields
                 .find((x) => x.key == 'commander')
-                .details.colorIdentity.map((x) => clrEmj[x])
+                .details.colorIdentity.map((x) => settings.emoji("colors")[x])
                 .join(' '),
             fields: cl([
                 {
@@ -85,7 +76,7 @@ export default {
         if (commander_field.details.colorIdentity) {
             embed.description = fields
                 .find((x) => x.key == 'commander')
-                .details.colorIdentity.map((x) => clrEmj[x])
+                .details.colorIdentity.map((x) => settings.emoji("colors")[x])
                 .join(' ');
         }
 

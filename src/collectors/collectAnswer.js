@@ -1,5 +1,5 @@
 const validateURL = require('valid-url');
-import { approved_websites } from '../data/interview_questions';
+// import { approved_websites } from '../data/interview_questions';
 import validateAnswerLength from '../utils/validateAnswerLength';
 import axios from 'axios';
 import questionPrompt from '../embeds/questionPrompt';
@@ -8,6 +8,7 @@ import { confirmationRow } from '../buttons/row';
 const mergeImages = require('merge-images');
 const { Canvas, Image } = require('canvas');
 import { MessageAttachment } from 'discord.js';
+import settings from '../data/settings';
 
 const collectAnswer = async ({ question, channel, i, questions_length }) => {
     try {
@@ -82,7 +83,7 @@ const proceedReducer = async ({ content, key, channel }) => {
                 return { content, proceed: false, error: 'Invalid link.' };
             }
             if (
-                !approved_websites.some((x) =>
+                !settings.approved_sites().some((x) =>
                     content.toLowerCase().includes(x.base_url.toLowerCase())
                 )
             ) {
