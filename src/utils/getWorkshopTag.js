@@ -20,7 +20,7 @@ export default () => {
 
     if (workshop_suffix == 999) {
         workshop_suffix = 1;
-    } else if (workshop_suffix >= 1) {
+    } else if (workshop_suffix > 1) {
         workshop_suffix++;
     }
 
