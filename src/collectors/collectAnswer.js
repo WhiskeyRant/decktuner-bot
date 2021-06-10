@@ -33,7 +33,7 @@ const collectAnswer = async ({ question, channel, i, questions_length }) => {
             };
         }
 
-        if (collected.first().content.startsWith('!cancel')) {
+        if (['!cancel', '!close'].some(x => collected.first().content.startsWith(x))) {
             await collected.first().react('✅');
             return {
                 cancel: true,
