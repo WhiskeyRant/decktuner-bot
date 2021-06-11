@@ -7,7 +7,7 @@ export default () => {
         settings.channel('workshop_category')
     );
     if (!workshop_category.children.array().length) {
-        workshop_suffix = 1;
+        return `001`;
     } else {
         const getTag = (channel) => +channel.name.split('-')[1];
         const highest_tag = workshop_category.children.reduce(
@@ -20,7 +20,7 @@ export default () => {
 
     if (workshop_suffix == 999) {
         workshop_suffix = 1;
-    } else if (workshop_suffix > 1) {
+    } else if (workshop_suffix >= 1) {
         workshop_suffix++;
     }
 
