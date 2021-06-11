@@ -68,7 +68,6 @@ Workshops        | -- category for workshop channels to be created under
     -- Allowing any members to create roles means they will be able to create a role named "Tuner", "Moderator", or "Admin" which means they will be able to close workshops prematurely
 -- Do not close a workshop until the pilot is ready to process feedback
     -- This might need to be an added feature to the bot. 
-    
 
 .: Known Issues :.
 

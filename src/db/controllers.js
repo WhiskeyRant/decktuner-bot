@@ -83,6 +83,21 @@ export const findWorkshopById = async ({ channel_id }) => {
     }
 };
 
+// export const findUserById = async ({ user_id }) => {
+//     try {
+//         const { User } = await models();
+
+//         const user = await User.findOne({ 
+//             where: { user_id }
+//         });
+
+//         return user;
+//     }
+//     catch (e) {
+//         console.log(e);
+//     }
+// };
+
 
 export const addTunerToWorkshop = async ({ channel_id, user_id }) => {
     try {

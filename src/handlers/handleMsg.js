@@ -6,6 +6,7 @@ import createRoom from '../utils/createRoom';
 import closeWorkshop from '../utils/closeWorkshop';
 import tunerParticipation from '../utils/tunerParticipation';
 import ActiveInterviews from '../utils/ActiveInterviews';
+import { createUser } from '../db/controllers';
 
 const handleMsg = async (msg) => {
     try {
@@ -49,6 +50,15 @@ const handleMsg = async (msg) => {
                 await tunerParticipation({ msg });
                 return;
             }
+        }
+
+        if (msg.content.toLowerCase().startsWith('!points')) {
+            msg.channel.startTyping();
+            const [user] = await createUser({ user_id: msg.author.id });
+
+            msg.reply(`Your feedback score is ${user.toJSON().feedback} points.`);
+
+            msg.channel.stopTyping();
         }
     } catch (e) {
         console.log(e);
