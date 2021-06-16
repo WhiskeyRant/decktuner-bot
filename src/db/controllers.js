@@ -18,11 +18,7 @@ export const createUser = async ({ user_id }) => {
 export const updateUserFeedback = async ({ user_id, attitude }) => {
     try {
         const { User } = await models();
-
-        // if ([-1, 0, 1].some(x => attitude == x)) {
-        //     throw new Error (`updateUserFeedback: Value for property 'attitude' not recognized. `);
-        // }
-
+        
         const user = await User.findOne({where: { user_id }});
 
         if (!user) {

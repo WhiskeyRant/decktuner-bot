@@ -1,9 +1,9 @@
 import { DataTypes } from 'sequelize';
-import initDB from './init';
+import db from './init';
 
 const models = async () => {
     try {
-        const sequelize = await initDB();
+        const sequelize = db.use();
 
         const generatedIDAsPK = {
             type: DataTypes.STRING(20),
