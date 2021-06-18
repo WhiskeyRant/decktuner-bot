@@ -6,7 +6,7 @@ const cl = (arr) => arr.filter((x) => x); // clean array of undefined items (for
 export default {
     create: ({ fields, author, channel = 'example', empty_tuners }) => {
         const embed = {
-            color: 0x0099ff,
+            color: 0x32aaff,
             title: fields.find((x) => x.key == 'commander').details.name,
             url: fields.find((x) => x.key == 'decklist').content,
             author: {

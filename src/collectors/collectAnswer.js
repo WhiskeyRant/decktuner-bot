@@ -136,8 +136,6 @@ const proceedReducer = async ({ content, key, channel }) => {
                     };
                 };
 
-                console.log(valid_commanders[0].name);
-
                 const { data: scryfall_data } = await axios.get(
                     `https://api.scryfall.com/cards/named?exact=${valid_commanders[0].name}`
                 );

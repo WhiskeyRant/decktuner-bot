@@ -71,7 +71,8 @@ Workshops        | -- category for workshop channels to be created under
 
 .: Known Issues :.
 
-<none>
+-- if you spam messages in pm, bot will forbid you from working. need to create a !close/!cancel command in channel
+    -- the bot will eventually cancel but its still not good
 
 .: Test Cases :.
 

@@ -13,6 +13,7 @@
         "axios": "^0.21.1",
         "canvas": "^2.8.0",
         "cross-env": "^7.0.3",
+        "date-fns": "^2.22.1",
         "discord-buttons": "3.1.1",
         "discord.js": "^12.5.3",
         "dotenv": "^10.0.0",

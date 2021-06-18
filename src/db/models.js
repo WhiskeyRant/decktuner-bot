@@ -20,12 +20,12 @@ const models = async () => {
                     ...generatedIDAsPK,
                     field: 'user_id',
                 },
-                feedback: {
-                    type: DataTypes.INTEGER,
-                    default: 0,
-                    allowNull: false,
-                    comment: 'feedback will be incremented or decremented',
-                },
+                // feedback: {
+                //     type: DataTypes.INTEGER,
+                //     default: 0,
+                //     allowNull: false,
+                //     comment: 'feedback will be incremented or decremented',
+                // },
             },
             {
                 tableName: 'users',
@@ -39,14 +39,6 @@ const models = async () => {
                     ...generatedIDAsPK,
                     field: 'channel_id',
                 },
-                // pilot: {
-                //     type: DataTypes.STRING(20),
-                //     allowNull: false,
-                //     references: {
-                //         model: User,
-                //         key: 'user_id',
-                //     },
-                // },
                 post_id: {
                     type: DataTypes.STRING(20),
                     allowNull: false,
@@ -59,34 +51,33 @@ const models = async () => {
             }
         );
 
-        // const Tuner = sequelize.define(
-        //     'Tuner',
-        //     {
-        //         workshop: {
-        //             type: DataTypes.STRING(20),
-        //             allowNull: false,
-        //             references: {
-        //                 model: Workshop,
-        //                 key: 'channel_id',
-        //             },
-        //         },
-        //         user: {
-        //             type: DataTypes.STRING(20),
-        //             allowNull: false,
-        //             references: {
-        //                 model: User,
-        //                 key: 'user_id',
-        //             },
-        //         },
-        //     },
-        //     {
-        //         tableName: 'tuners',
-        //     }
-        // );
+        const Feedback = sequelize.define(
+            'Feedback',
+            {
+                score: {
+                    type: DataTypes.INTEGER,
+                    allowNull: false,
+                },
+            },
+            {
+                tableName: 'feedback',
+            }
+        );
 
+        // workshop will have a column called "pilot"
         Workshop.belongsTo(User, {
             foreignKey: 'pilot',
             allowNull: false,
+        });
+
+        User.hasMany(Feedback, {
+            as: 'feedback',
+            foreignKey: 'user_id'
+        });
+        Feedback.belongsTo(User, {
+            foreignKey: 'user_id',
+            allowNull: false,
+            as: 'user',
         });
 
         Workshop.belongsToMany(User, {
@@ -103,7 +94,7 @@ const models = async () => {
 
         await sequelize.sync();
 
-        return { Workshop, User };
+        return { Workshop, User, Feedback };
     } catch (e) {
         console.log(e);
     }

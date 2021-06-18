@@ -8,7 +8,7 @@ const cl = (arr) => arr.filter(x => x); // clean array of undefined items (for f
 export default {
     create: ({ question, i, questions_length, details, attachment }) => {
         const embed = {
-            color: 0x0099ff,
+            color: 0x32aaff,
             author: {
                 name: 'DeckTuner',
                 icon_url: settings.image('bot_logo'),

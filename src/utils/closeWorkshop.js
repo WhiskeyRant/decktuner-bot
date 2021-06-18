@@ -2,7 +2,7 @@ import settings from '../data/settings';
 import {
     deleteWorkshop,
     findWorkshopById,
-    updateUserFeedback,
+    addUserFeedback,
 } from '../db/controllers';
 import client from './client';
 import { logClosedWorkshop, logFeedback } from './logHistory';
@@ -102,8 +102,8 @@ const processFeedbackQuestion = async ({ tuner, pilot }) => {
                 tuner: tuner.id,
                 change,
             }),
-            updateUserFeedback({
-                user_id: pilot.id,
+            addUserFeedback({
+                user_id: tuner.id,
                 attitude: change,
             }),
         ]);
