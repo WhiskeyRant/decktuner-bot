@@ -23,8 +23,13 @@ export default [
         key: 'desired_experience',
     },
     {
-        question:
-            'Got it. Now set your budget for changes and or upgrades. You can set a total amount and/or a per card amount. Please use your preferred currency denotations. Example: $50 total and no more than $10 per card',
+        question: [
+            `Got it. Now set your budget for **changes and upgrades only**. If you also have a spending limit per card you can list that after the changes budget separated by “/”.`,
+            `Please use your preferred currency denotations.`,
+            `Example:`,
+            '```$50/$10```',
+            `If your entire deck needs to stay under a total budget, be sure to mention that in the question about tuning goals later. If you’re a supreme being with no financial restrictions just say **"No budget"**.`,
+        ].join('\n'),
         key: 'budget',
     },
     {

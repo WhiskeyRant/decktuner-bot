@@ -49,8 +49,6 @@ export default async ({ msg }) => {
             (pin) => pin.author.id == client.user.id
         );
 
-        await logClosedWorkshop({ msg, embed: embeds[0] });
-
         const deleted = await deleteWorkshop({ channel_id: msg.channel.id });
 
         if (deleted == 0) {
@@ -60,7 +58,16 @@ export default async ({ msg }) => {
             );
         }
 
-        msg.channel.delete();
+        const bounty_board = client.channels.cache.get(
+            settings.channel('bounty_board')
+        );
+        const post = await bounty_board.messages.fetch(workshop.toJSON().post_id);
+        Promise.all([
+            logClosedWorkshop({ msg, embed: embeds[0] }),
+            msg.channel.delete(),
+            post.delete(),
+            pilot.send('✅ The workshop has been successfully closed and your feedback has been submitted. Thanks for using DeckTuner!')
+        ]);
     } catch (e) {
         console.log(e);
     }
@@ -94,7 +101,7 @@ const processFeedbackQuestion = async ({ tuner, pilot }) => {
                 component: feedbackRow({
                     disabled: true,
                     message_id: feedback_question_first.id,
-                    chosen: change
+                    chosen: change,
                 }),
             }),
             logFeedback({

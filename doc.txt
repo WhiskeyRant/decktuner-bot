@@ -76,3 +76,11 @@ Workshops        | -- category for workshop channels to be created under
 
 .: Test Cases :.
 
+.: Recent Changes :.
+-- Added the ability for pilots to close channels.
+-- Added a thank you message when users finish answering feedback when closing a workshop.
+-- Question prompt for budget category changed to be more descriptive. 
+-- Posts in #tuning-board will now be removed once the workshop is closed. (Old posts remain for now.)
+-- When completing the questionnaire to open a workshop, the final message will include directions for how to find the workshop channel.
+
+-- Fixed: Links from approved websites should always be accepted now whether or not they contain the www subdomain. 

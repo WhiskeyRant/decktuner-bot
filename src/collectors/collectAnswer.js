@@ -1,4 +1,5 @@
-const validateURL = require('valid-url');
+// const validateURL = require('valid-url');
+import { parseDomain, ParseResultType, fromUrl } from 'parse-domain';
 // import { approved_websites } from '../data/interview_questions';
 import validateAnswerLength from '../utils/validateAnswerLength';
 import axios from 'axios';
@@ -33,7 +34,11 @@ const collectAnswer = async ({ question, channel, i, questions_length }) => {
             };
         }
 
-        if (['!cancel', '!close'].some(x => collected.first().content.startsWith(x))) {
+        if (
+            ['!cancel', '!close'].some((x) =>
+                collected.first().content.startsWith(x)
+            )
+        ) {
             await collected.first().react('✅');
             return {
                 cancel: true,
@@ -51,6 +56,8 @@ const collectAnswer = async ({ question, channel, i, questions_length }) => {
 
         if (proceed) {
             collected.first().react('✅');
+        } else {
+            collected.first().react('❌');
         }
 
         return { proceed, error, content, details, cancel };
@@ -59,7 +66,7 @@ const collectAnswer = async ({ question, channel, i, questions_length }) => {
         return {
             cancel: true,
             proceed: false,
-            error: 'An unexpected error occured. An API that the bot utilizes is likely down right now, but please contact an admin if the problem persists.',
+            error: 'An unexpected error occured. An API that the bot utilizes is likely down right now. Please contact an admin so they can look into it.',
         };
     }
 };
@@ -74,25 +81,36 @@ const proceedReducer = async ({ content, key, channel }) => {
             return {
                 content,
                 proceed: false,
-                error: `Length of answer too long. Please cut down the length. Max char count: ${length}`,
+                error: `❌ Length of answer too long. Please cut down the length. Max char count: ${length}`,
             };
         }
 
         if (key === 'decklist') {
-            if (!validateURL.isUri(content)) {
+            const parsed = parseDomain(
+                fromUrl(content)
+            );
+            const { domain, topLevelDomains, type } = parsed;
+            if (type === 'INVALID') {
                 return { content, proceed: false, error: 'Invalid link.' };
             }
-            if (
-                !settings.approved_sites().some((x) =>
-                    content.toLowerCase().includes(x.base_url.toLowerCase())
-                )
-            ) {
+            // console.log(subDomains); // ["www", "some"]
+            // console.log(domain); // "example"
+            // console.log(topLevelDomains); // ["co", "uk"]
+
+            const correct_link = settings
+                .approved_sites()
+                .some(
+                    (x) =>
+                        domain === x.domain && topLevelDomains.includes(x.tld)
+                );
+            if (!correct_link) {
                 return {
                     content,
                     proceed: false,
-                    error: 'Submitted deck is not from an approved site.',
+                    error: '❌ Submitted deck is not from an approved site. Check to make sure the URL is correct and then please try again.',
                 };
             }
+
             return { content, proceed: true };
         } else if (key === 'commander') {
             channel.startTyping();
@@ -134,12 +152,11 @@ const proceedReducer = async ({ content, key, channel }) => {
                         proceed: false,
                         error: "❌ One or more of the commanders you selected weren't found. Please try again.",
                     };
-                };
+                }
 
                 const { data: scryfall_data } = await axios.get(
                     `https://api.scryfall.com/cards/named?exact=${valid_commanders[0].name}`
                 );
-
 
                 if (
                     commander_list.length > 1 &&

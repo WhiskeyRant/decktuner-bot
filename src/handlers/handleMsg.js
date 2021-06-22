@@ -6,7 +6,11 @@ import createRoom from '../utils/createRoom';
 import closeWorkshop from '../utils/closeWorkshop';
 import tunerParticipation from '../utils/tunerParticipation';
 import ActiveInterviews from '../utils/ActiveInterviews';
-import { findFeedbackByUserId, findHighestFeedback } from '../db/controllers';
+import {
+    findFeedbackByUserId,
+    findHighestFeedback,
+    findWorkshopById,
+} from '../db/controllers';
 import feedback from '../embeds/feedback';
 
 const handleMsg = async (msg) => {
@@ -36,9 +40,18 @@ const handleMsg = async (msg) => {
             if (
                 msg.content.trim() == '!close' &&
                 msg.member.roles.cache.some((role) => 
-                    ['moderator', 'admin', 'tuner'].includes(role.name.toLowerCase().trim()) // prettier-ignore
+                    ['moderator', 'admin', 'tuner', 'pilot'].includes(role.name.toLowerCase().trim()) // prettier-ignore
                 ) // prettier-ignore
             ) {
+                const [workshop] = await findWorkshopById({
+                    channel_id: msg.channel.id,
+                });
+                if (workshop.toJSON().pilot !== msg.author.id) {
+                    msg.react('❌');
+                    return msg.reply(
+                        '❌ You do not have permissions to close this channel.'
+                    );
+                }
                 await closeWorkshop({ msg });
                 return;
             }
@@ -83,7 +96,7 @@ const handleMsg = async (msg) => {
                         'No feedback found for the given time parameter.'
                     );
                 }
-                
+
                 msg.channel.stopTyping();
                 msg.reply({
                     embed: feedback.create({
@@ -102,9 +115,11 @@ const handleMsg = async (msg) => {
                 });
 
                 if (!leaderboard.length) {
-                    return msg.reply(`No users found in the leaderboard for given time parameter: \`${time_parameter}\`. Try a longer amount of time.`)
+                    return msg.reply(
+                        `No users found in the leaderboard for given time parameter: \`${time_parameter}\`. Try a longer amount of time.`
+                    );
                 }
-                const {user: top_user} = await msg.guild.members.fetch(
+                const { user: top_user } = await msg.guild.members.fetch(
                     leaderboard[0].user_id
                 );
 
@@ -113,30 +128,13 @@ const handleMsg = async (msg) => {
                     embed: feedback.create({
                         leaderboard,
                         time_parameter,
-                        top_user
+                        top_user,
                     }),
                 });
             }
 
             msg.channel.stopTyping();
         }
-
-        // if (msg.content.toLowerCase().startsWith('!leaderboard')) {
-        //     msg.channel.startTyping();
-
-        //     const msg_array = msg.content.toLowerCase().split(' ');
-        //     let time_parameter = 'all';
-
-        //     if (msg_array[1]) {
-        //         if (msg_array[1].includes('week')) {
-        //             time_parameter = 'week';
-        //         } else if (msg_array[1].includes('month')) {
-        //             time_parameter = 'month';
-        //         }
-        //     }
-
-        //     msg.channel.stopTyping();
-        // }
     } catch (e) {
         console.log(e);
     }

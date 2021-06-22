@@ -64,6 +64,8 @@ const settings = {
         {
             base_url: 'https://archidekt.com/',
             site_name: 'Archidekt',
+            domain: "archidekt",
+            tld: "com",
             get emoji() {
                 return settings.emojis.site_logos[process.env.NODE_ENV]
                     .archidekt;
@@ -72,6 +74,8 @@ const settings = {
         {
             base_url: 'https://www.moxfield.com/',
             site_name: 'Moxfield',
+            domain: "moxfield",
+            tld: "com",
             get emoji() {
                 return settings.emojis.site_logos[process.env.NODE_ENV]
                     .moxfield;
@@ -80,6 +84,8 @@ const settings = {
         {
             base_url: 'https://tappedout.net/',
             site_name: 'TappedOut',
+            domain: "tappedout",
+            tld: "net",
             get emoji() {
                 return settings.emojis.site_logos[process.env.NODE_ENV]
                     .tappedout;
@@ -88,6 +94,8 @@ const settings = {
         {
             base_url: 'https://deckstats.net/',
             site_name: 'DeckStats',
+            domain: "deckstats",
+            tld: "net",
             get emoji() {
                 return settings.emojis.site_logos[process.env.NODE_ENV]
                     .deckstats;
@@ -96,6 +104,8 @@ const settings = {
         {
             base_url: 'https://aetherhub.com/',
             site_name: 'AetherHub',
+            domain: "aetherhub",
+            tld: "com",
             get emoji() {
                 return settings.emojis.site_logos[process.env.NODE_ENV]
                     .aetherhub;

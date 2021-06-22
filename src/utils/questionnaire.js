@@ -106,10 +106,6 @@ export default {
                 buttoned_msg: edited_msg,
             });
             if (confirmed) {
-                edited_msg.channel.send(
-                    `✅ Your workshop has been created. Check the server!`
-                );
-
                 const workshop_suffix = getWorkshopTag();
                 const created_room = await createRoom({
                     author: msg.author,
@@ -120,33 +116,38 @@ export default {
                 const bounty_board = client.channels.cache.get(
                     settings.channel('bounty_board')
                 );
-                const bounty_board_post = await bounty_board.send({
-                    embed: bountyListing.create({
-                        fields: answers,
-                        author: msg.author,
-                        channel: created_room.id,
-                    }),
-                });
-
-                const [user, created] = await createUser({
-                    user_id: msg.author.id,
-                });
-                const workshop = await createWorkshop({
-                    channel_id: created_room.id,
-                    post_id: bounty_board_post.id,
-                    pilot: user.toJSON().user_id,
-                });
-
-                preview_msg.edit(
-                    'This is a preview of what the bounty board message will look like. Is this ok?',
-                    {
-                        component: confirmationRow({
-                            message_id: preview_msg.id,
-                            disabled: true,
+                const [bounty_board_post, [user, created]] = await Promise.all([
+                    bounty_board.send({
+                        embed: bountyListing.create({
+                            fields: answers,
+                            author: msg.author,
+                            channel: created_room.id,
                         }),
-                        embed: embed,
-                    }
-                );
+                    }),
+                    createUser({
+                        user_id: msg.author.id,
+                    })
+                ]);
+                Promise.all([
+                    createWorkshop({
+                        channel_id: created_room.id,
+                        post_id: bounty_board_post.id,
+                        pilot: user.toJSON().user_id,
+                    }),
+                    preview_msg.edit(
+                        'This is a preview of what the bounty board message will look like. Is this ok?',
+                        {
+                            component: confirmationRow({
+                                message_id: preview_msg.id,
+                                disabled: true,
+                            }),
+                            embed: embed,
+                        }
+                    ),
+                    msg.author.send(
+                        `✅ Your workshop has been created and named **#workshop-${workshop_suffix}**. You can go to #tuning-board channel in the server to see your tuning listing which includes a link to your channel, and you can also use the ctrl+k command to directly search for your designated workshop channel.`
+                    ),
+                ]);
             } else if (rejected) {
                 edited_msg.channel.send(
                     `❌ Tuning initiation cancelled. You can start the process again by typing !tune in the #get-help channel on the server.`

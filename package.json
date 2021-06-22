@@ -20,6 +20,7 @@
         "esm": "^3.2.25",
         "jest": "^27.0.3",
         "merge-images": "^2.0.0",
+        "parse-domain": "^3.0.3",
         "pg": "^8.6.0",
         "pg-hstore": "^2.3.3",
         "sequelize": "^6.6.2",
