@@ -85,15 +85,16 @@ export default {
                 fields: answers,
                 author: msg.author,
             });
+            const confirmation_msg_text = 'This is a preview of what the tuning board post will look like. Is this ok?';
 
             const preview_msg = await intro_msg.channel.send(
-                'This is a preview of what the bounty board message will look like. Is this ok?',
+                confirmation_msg_text,
                 {
                     embed: embed,
                 }
             );
             const edited_msg = await preview_msg.edit(
-                'This is a preview of what the bounty board message will look like. Is this ok?',
+                confirmation_msg_text,
                 {
                     component: confirmationRow({
                         message_id: preview_msg.id,
@@ -135,7 +136,7 @@ export default {
                         pilot: user.toJSON().user_id,
                     }),
                     preview_msg.edit(
-                        'This is a preview of what the bounty board message will look like. Is this ok?',
+                        confirmation_msg_text,
                         {
                             component: confirmationRow({
                                 message_id: preview_msg.id,
@@ -145,7 +146,7 @@ export default {
                         }
                     ),
                     msg.author.send(
-                        `✅ Your workshop has been created and named **#workshop-${workshop_suffix}**. You can go to #tuning-board channel in the server to see your tuning listing which includes a link to your channel, and you can also use the ctrl+k command to directly search for your designated workshop channel.`
+                        `✅ Your workshop has been created and named **#workshop-${workshop_suffix}**. You can go to the #tuning-board channel to see your tuning request which includes a link to your channel. You can also use the ctrl+k command and type in your workshop number to directly search for your designated workshop channel.`
                     ),
                 ]);
             } else if (rejected) {
@@ -153,7 +154,7 @@ export default {
                     `❌ Tuning initiation cancelled. You can start the process again by typing !tune in the #get-help channel on the server.`
                 );
                 preview_msg.edit(
-                    'This is a preview of what the bounty board message will look like. Is this ok?',
+                    confirmation_msg_text,
                     {
                         component: confirmationRow({
                             message_id: preview_msg.id,

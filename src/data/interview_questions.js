@@ -37,7 +37,7 @@ export default [
         key: 'deck_goals',
     },
     {
-        question: `Sounds good. Now tell us what you'd like the tuners to help you with. It can be anything from “upgrade it to a competitive deck” to “help me find more Nirvana references for my janky tribute deck`,
+        question: `Sounds good. Now tell us what you'd like the tuners to help you with. It can be anything from “upgrade it to a competitive deck” to “help me find more Nirvana references for my janky tribute deck.`,
         key: 'tuning_goals',
     },
 ];

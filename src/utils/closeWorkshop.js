@@ -17,31 +17,35 @@ import collectClick from '../collectors/collectClick';
 import { feedbackRow } from '../buttons/row';
 const { MessageActionRow } = require('discord-buttons');
 
-export default async ({ msg }) => {
+export default async ({ msg, force }) => {
     try {
-        msg.channel.send({
-            embed: questionPrompt.create({
-                question:
-                    'Looks like the tuning is complete!\n' +
-                    'We ask that pilots leave feedback for the tuners whether it be positive, neutral, or negative.\n' +
-                    'Please check your inbox to complete the feedback process.\n',
-            }),
-        });
-
         const [workshop, tuners] = await findWorkshopById({
             channel_id: msg.channel.id,
         });
-        const tuner_user_data = await getTunerUserData({ msg, tuners });
-
-        const pilot = await msg.guild.members.fetch(workshop.toJSON().pilot);
-
-        let i = 0;
-        while (i < tuner_user_data.length) {
-            await processFeedbackQuestion({
-                tuner: tuner_user_data[i],
-                pilot,
+        if (!force) {
+            msg.channel.send({
+                embed: questionPrompt.create({
+                    question:
+                        'Looks like the tuning is complete!\n' +
+                        'We ask that pilots leave feedback for the tuners whether it be positive, neutral, or negative.\n' +
+                        'Please check your inbox to complete the feedback process.\n',
+                }),
             });
-            i++;
+
+            const tuner_user_data = await getTunerUserData({ msg, tuners });
+
+            const pilot = await msg.guild.members.fetch(
+                workshop.toJSON().pilot
+            );
+
+            let i = 0;
+            while (i < tuner_user_data.length) {
+                await processFeedbackQuestion({
+                    tuner: tuner_user_data[i],
+                    pilot,
+                });
+                i++;
+            }
         }
 
         const pinned_messages = await msg.channel.messages.fetchPinned();
@@ -61,13 +65,20 @@ export default async ({ msg }) => {
         const bounty_board = client.channels.cache.get(
             settings.channel('bounty_board')
         );
-        const post = await bounty_board.messages.fetch(workshop.toJSON().post_id);
-        Promise.all([
-            logClosedWorkshop({ msg, embed: embeds[0] }),
+        const post = await bounty_board.messages.fetch(
+            workshop.toJSON().post_id
+        );
+        const actions = [
+            logClosedWorkshop({ msg, force, embed: embeds[0] }),
             msg.channel.delete(),
             post.delete(),
-            pilot.send('✅ The workshop has been successfully closed and your feedback has been submitted. Thanks for using DeckTuner!')
-        ]);
+            !force
+                ? undefined
+                : pilot.send(
+                      '✅ The workshop has been successfully closed and your feedback has been submitted. Thanks for using DeckTuner!'
+                  ),
+        ];
+        Promise.all(actions.filter((x) => x));
     } catch (e) {
         console.log(e);
     }

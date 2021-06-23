@@ -13,7 +13,7 @@ export default async ({ author, fields, suffix }) => {
         parent: settings.channel('workshop_category'),
     });
     const starting_msg = await help_channel.send(
-        `${author} Your workshop has been created and tuner will contact you soon. Thanks for using DeckTuner!`,
+        `${author} Your workshop has been created and a tuner will contact you soon. Thanks for using DeckTuner!`,
         {
             embed: bountyListing.create({
                 author,
