@@ -45,7 +45,7 @@ const handleMsg = async (msg) => {
             msg.type !== 'PINS_ADD' &&
             !msg.author.bot &&
             msg.channel.parent &&
-            msg.channel.parent.id == settings.channel('workshop_category')
+            settings.channel('workshop_category').includes(msg.channel.parent.id)
         ) {
             if (
                 msg.content.trim() === '!close' &&

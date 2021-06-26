@@ -10,7 +10,7 @@ const settings = {
         },
         workshop_category: {
             development: '847460751940780072',
-            production: '852304713478176779',
+            production: ['852304713478176779', '858074483159203920', '858074558782111755'],
         },
         history: {
             development: '850215136962936902',

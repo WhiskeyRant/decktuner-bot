@@ -6,23 +6,32 @@ const temp = {
     id: '123',
 };
 
-export default async ({ author, fields, suffix }) => {
-    const guild = client.guilds.cache.get(settings.server());
-    const help_channel = await guild.channels.create('workshop-' + suffix, {
-        topic: 'some topic here',
-        parent: settings.channel('workshop_category'),
-    });
-    const starting_msg = await help_channel.send(
-        `${author} Your workshop has been created and a tuner will contact you soon. Thanks for using DeckTuner!`,
-        {
-            embed: bountyListing.create({
-                author,
-                fields,
-                channel: help_channel.id,
-                empty_tuners: true,
-            }),
+const createRoom = async ({ author, fields, suffix, i = 0 }) => {
+    try {
+        const guild = client.guilds.cache.get(settings.server());
+        const help_channel = await guild.channels.create('workshop-' + suffix, {
+            topic: 'some topic here',
+            parent: settings.channel('workshop_category')[i],
+        });
+        const starting_msg = await help_channel.send(
+            `${author} Your workshop has been created and a tuner will contact you soon. Thanks for using DeckTuner!`,
+            {
+                embed: bountyListing.create({
+                    author,
+                    fields,
+                    channel: help_channel.id,
+                    empty_tuners: true,
+                }),
+            }
+        );
+        starting_msg.pin();
+        return help_channel;
+    } catch (e) {
+        if (e.code === 50035 && i !== 2) {
+            return await createRoom({author, fields, suffix, i: i + 1})
         }
-    );
-    starting_msg.pin();
-    return help_channel;
+        console.log(e);
+    }
 };
+
+export default createRoom;

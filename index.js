@@ -1,7 +1,7 @@
 require('dotenv').config();
 import client from './src/utils/client';
 import handleMsg from './src/handlers/handleMsg';
-import { sub } from 'date-fns';
+import getWorkshopTag from './src/utils/getWorkshopTag';
 
 client.on('ready', async () => {
     try {
