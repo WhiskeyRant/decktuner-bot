@@ -1,9 +1,11 @@
 import parseTimeParameter from '../../utils/parseTimeParameter';
 import { findHighestFeedback } from '../../db/controllers';
 import feedback from '../../embeds/feedback';
+import logEvent from '../../utils/logEvent';
 
 export default async ({ msg }) => {
     try {
+        logEvent({ id: 'command_leaderboard', details: { msg } });
         msg.channel.startTyping();
 
         const time_parameter = parseTimeParameter({ content: msg.content });

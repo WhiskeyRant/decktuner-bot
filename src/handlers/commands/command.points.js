@@ -1,9 +1,11 @@
 import parseTimeParameter from '../../utils/parseTimeParameter';
 import { findFeedbackByUserId } from '../../db/controllers';
 import feedback from '../../embeds/feedback';
+import logEvent from '../../utils/logEvent';
 
 export default async ({ msg }) => {
     try {
+        logEvent({ id: 'command_points', details: { msg } });
         msg.channel.startTyping();
 
         const time_parameter = parseTimeParameter({ content: msg.content });
@@ -26,8 +28,7 @@ export default async ({ msg }) => {
                 points: user.toJSON().total_score,
                 ratio:
                     +user.toJSON().total_positives /
-                    (+user.toJSON().total_positives +
-                        +user.toJSON().total_negatives),
+                    (+user.toJSON().total_positives + +user.toJSON().total_negatives),
             }),
         });
     } catch (err) {

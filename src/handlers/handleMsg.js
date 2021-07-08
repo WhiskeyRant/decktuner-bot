@@ -1,24 +1,33 @@
-import client from '../utils/client';
-import questionnaire from '../utils/questionnaire';
 import settings from '../../src/data/settings';
-import bountyListing from '../embeds/bountyListing';
-import createRoom from '../utils/createRoom';
-import closeWorkshop from '../utils/closeWorkshop';
+import { findCardByName, findWorkshopById } from '../db/controllers';
+import closeWorkshop from '../logic/closeWorkshop';
+import updateCardAPI from '../logic/updateCardAPI';
 import tunerParticipation from '../utils/tunerParticipation';
-import ActiveInterviews from '../utils/ActiveInterviews';
-import {
-    findFeedbackByUserId,
-    findHighestFeedback,
-    findWorkshopById,
-} from '../db/controllers';
-import feedback from '../embeds/feedback';
-import tune from './commands/command.tune';
-import points from './commands/command.points';
 import leaderboard from './commands/command.leaderboard';
-import setpoints from './commands/command.setpoints';
+import points from './commands/command.points';
+import tune from './commands/command.tune';
+import logEvent from '../utils/logEvent';
 
 const handleMsg = async (msg) => {
     try {
+        if (msg.content.startsWith('!test')) {
+            const users_roles = msg.member.roles.cache
+                .map((role) => role.name.toLowerCase().trim())
+                .filter((role) => ['moderator', 'admin', 'tuner', 'pilot'].includes(role));
+            logEvent({
+                id: 'command_close_force_bad_permissions',
+                details: {
+                    msg,
+                    roles: users_roles,
+                },
+            });
+        }
+        if (
+            msg.content.startsWith('!api') &&
+            msg.member.roles.cache.some((role) => role.name.toLowerCase().trim() === 'admin')
+        ) {
+            updateCardAPI({ msg });
+        }
         if (msg.content.startsWith('!points')) {
             points({ msg });
             return;
@@ -27,11 +36,11 @@ const handleMsg = async (msg) => {
             leaderboard({ msg });
             return;
         }
-        if (
-            msg.content.startsWith('!tune') &&
-            settings.channel('get_help') === msg.channel.id
-        ) {
-            tune({ msg });
+        if (msg.content.startsWith('!tune')) {
+            // if () {
+
+            // }
+            await tune({ msg });
             return;
         }
         // if (
@@ -47,55 +56,29 @@ const handleMsg = async (msg) => {
             msg.channel.parent &&
             settings.channel('workshop_category').includes(msg.channel.parent.id)
         ) {
-            if (
-                msg.content.trim() === '!close' &&
-                msg.member.roles.cache.some((role) =>
-                    ['moderator', 'admin', 'tuner', 'pilot'].includes(
-                        role.name.toLowerCase().trim()
-                    )
-                )
-            ) {
-                const [workshop] = await findWorkshopById({
-                    channel_id: msg.channel.id,
-                });
-                if (
-                    workshop.toJSON().pilot !== msg.author.id &&
-                    msg.member.roles.cache.some((role) =>
-                        ['pilot'].includes(role.name.toLowerCase().trim())
-                    )
-                ) {
+            const users_roles = msg.member.roles.cache
+                .map((role) => role.name.toLowerCase().trim())
+                .filter((role) => ['moderator', 'admin', 'tuner', 'pilot'].includes(role));
+
+            if (msg.content.trim() === '!close' && users_roles.length) {
+                return await closeWorkshop({ msg });
+            } else if (msg.content.trim() === '!forceclose') {
+                if (!users_roles.some((role) => ['moderator', 'admin'].includes(role))) {
+                    logEvent({
+                        id: 'command_close_force_bad_permissions',
+                        details: {
+                            msg,
+                            roles: users_roles,
+                        },
+                    });
                     msg.react('❌');
-                    return msg.reply(
-                        '❌ You do not have permissions to close this channel.'
-                    );
+                    return msg.reply('❌ You do not have permissions to force close this channel.');
                 }
-                await closeWorkshop({ msg });
-                return;
-            }
-            if (msg.content.trim() === '!forceclose') {
-                if (
-                    !msg.member.roles.cache.some((role) =>
-                        ['moderator', 'admin'].includes(
-                            role.name.toLowerCase().trim()
-                        )
-                    )
-                ) {
-                    msg.react('❌');
-                    return msg.reply(
-                        '❌ You do not have permissions to force close this channel.'
-                    );
-                }
-                await closeWorkshop({ msg, force: true });
-                return;
+                return closeWorkshop({ msg, force: true });
             }
 
-            if (
-                msg.member.roles.cache.some(
-                    (role) => role.name.toLowerCase().trim() === 'tuner'
-                )
-            ) {
-                await tunerParticipation({ msg });
-                return;
+            if (msg.member.roles.cache.some((role) => role.name.toLowerCase().trim() === 'tuner')) {
+                return tunerParticipation({ msg });
             }
         }
     } catch (e) {
@@ -104,18 +87,3 @@ const handleMsg = async (msg) => {
 };
 
 export default handleMsg;
-
-// {
-//     id: "357490324643512321",
-//     system: false,
-//     locale: null,
-//     flags: {
-//       bitfield: 768,
-//     },
-//     username: "Ox",
-//     bot: false,
-//     discriminator: "9999",
-//     avatar: "d4b1ae45fca70e065815d7c53db116e0",
-//     lastMessageID: "846020554586325013",
-//     lastMessageChannelID: "846013084896067614",
-//   }

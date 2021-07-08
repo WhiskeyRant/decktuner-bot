@@ -2,9 +2,7 @@ import client from './client';
 import settings from '../data/settings';
 
 export default () => {
-    // problem here
     let workshop_suffix;
-    // const workshop_category = client.channels.cache.get();
     const workshops = settings
         .channel('workshop_category')
         .map((x) => client.channels.cache.get(x).children.array())

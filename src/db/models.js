@@ -19,13 +19,7 @@ const models = async () => {
                 user_id: {
                     ...generatedIDAsPK,
                     field: 'user_id',
-                },
-                // feedback: {
-                //     type: DataTypes.INTEGER,
-                //     default: 0,
-                //     allowNull: false,
-                //     comment: 'feedback will be incremented or decremented',
-                // },
+                }
             },
             {
                 tableName: 'users',
@@ -64,6 +58,44 @@ const models = async () => {
             }
         );
 
+        const Card = sequelize.define(
+            'Card',
+            {
+                name: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
+                image_normal: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
+                image_art_crop: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                },
+                color_identity: {
+                    type: DataTypes.ARRAY(DataTypes.ENUM('W', 'B', 'R', 'U', 'G')),
+                    allowNull: false,
+                },
+                is_edh_legal: {
+                    type: DataTypes.BOOLEAN,
+                    allowNull: false,
+                },
+                is_partner: {
+                    type: DataTypes.BOOLEAN,
+                    allowNull: false,
+                },
+                scryfall_id: {
+                    type: DataTypes.STRING,
+                    allowNull: false,
+                    unique: true
+                }
+            },
+            {
+                tableName: 'cards',
+            }
+        );
+
         // workshop will have a column called "pilot"
         Workshop.belongsTo(User, {
             foreignKey: 'pilot',
@@ -94,7 +126,7 @@ const models = async () => {
 
         await sequelize.sync();
 
-        return { Workshop, User, Feedback };
+        return { Workshop, User, Feedback, Card };
     } catch (e) {
         console.log(e);
     }

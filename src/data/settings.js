@@ -9,7 +9,7 @@ const settings = {
             production: '851479909532434453',
         },
         workshop_category: {
-            development: '847460751940780072',
+            development: ['847460751940780072', '861229077784428584', '861229129159802920'],
             production: ['852304713478176779', '858074483159203920', '858074558782111755'],
         },
         history: {
@@ -59,6 +59,10 @@ const settings = {
                 aetherhub: '<:aetherhub:852311166130585650>',
             },
         },
+        loading: {
+            development: '<a:loading:861712249054822410>',
+            production: '<a:loading:861723188719255602>'
+        }
     },
     approved_sites: [
         {

@@ -2,7 +2,7 @@ import models from './models';
 import db from './init';
 import timeConstraintProperty from './timeConstraintProperty';
 import { countVotesAllLiteral, countVotesLiteral } from './literals';
-import { QueryTypes } from 'sequelize';
+import { QueryTypes, Op } from 'sequelize';
 import { sub } from 'date-fns';
 
 export const createUser = async ({ user_id }) => {
@@ -24,9 +24,7 @@ export const addUserFeedback = async ({ user_id, attitude }) => {
         const { Feedback } = await models();
 
         if (![-1, 0, 1].some((x) => x === attitude)) {
-            throw new Error(
-                'Attitude value invalid' + JSON.stringify({ user_id, attitude })
-            );
+            throw new Error('Attitude value invalid' + JSON.stringify({ user_id, attitude }));
         }
 
         return Feedback.create({
@@ -81,6 +79,25 @@ export const findWorkshopById = async ({ channel_id }) => {
     }
 };
 
+/** 
+ * Retrieves a workshop by the pilot's Discord ID, returning null if no matching cards were found.
+ * @param {object} pilot - Pilot's Discord ID
+ * @returns {object|undefined} - Returns workshop object, returning null if none were found.
+ */
+export const findWorkshopByPilot = async ({ pilot }) => {
+    try {
+        const { Workshop } = await models();
+
+        const workshop = await Workshop.findOne({
+            where: { pilot }
+        });
+
+        return workshop ? workshop.toJSON() : null;
+    } catch (e) {
+        console.log(e);
+    }
+};
+
 export const addTunerToWorkshop = async ({ channel_id, user_id }) => {
     try {
         const { Workshop, User } = await models();
@@ -107,16 +124,9 @@ export const findFeedbackByUserId = async ({ user_id, time_parameter }) => {
             attributes: [
                 'user_id',
                 [sequelize.fn('sum', sequelize.col('score')), 'total_score'],
+                [sequelize.literal(countVotesLiteral({ user_id, attitude: 1 })), 'total_positives'],
                 [
-                    sequelize.literal(
-                        countVotesLiteral({ user_id, attitude: 1 })
-                    ),
-                    'total_positives',
-                ],
-                [
-                    sequelize.literal(
-                        countVotesLiteral({ user_id, attitude: -1 })
-                    ),
+                    sequelize.literal(countVotesLiteral({ user_id, attitude: -1 })),
                     'total_negatives',
                 ],
                 // [sequelize.fn('count', sequelize.literal('SELECT score FROM feedback WHERE score = 1')), 'total_positive'],
@@ -138,10 +148,10 @@ export const findHighestFeedback = async ({ time_parameter }) => {
 
         const time_stamp = {
             get week() {
-                return sub(new Date(), { minutes: 5 });
+                return sub(new Date(), { days: 7 });
             },
             get month() {
-                return sub(new Date(), { days: 1 });
+                return sub(new Date(), { days: 30 });
             },
             get all() {
                 return sub(new Date(), { years: 10 });
@@ -154,6 +164,57 @@ export const findHighestFeedback = async ({ time_parameter }) => {
         });
 
         return leaderboard;
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+export const addCard = async ({ card, cards }) => {
+    try {
+        const { Card } = await models();
+
+        if (card) {
+            return Card.findOrCreate({
+                where: { scryfall_id: card.scryfall_id },
+                defaults: {
+                    ...card,
+                },
+            });
+        } else if (cards) {
+            return Promise.all(
+                cards.map(async (x) =>
+                    Card.findOrCreate({
+                        where: { scryfall_id: x.scryfall_id },
+                        defaults: {
+                            ...x,
+                        },
+                    })
+                )
+            );
+        }
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+/** 
+ * Retrieves a card by name, returning null if no matching cards were found.
+ * @param {object} search - The text to search for. Case sensitive
+ * @returns {object|undefined} - Returns the card object from the database, or returns null if no cards were found.
+ */
+export const findCardByName = async ({ search }) => {
+    try {
+        const { Card } = await models();
+
+        const retrieved = await Card.findOne({
+            where: { name: { [Op.iLike]: `${search}%` } },
+        });
+
+        if (retrieved) {
+            return retrieved.toJSON();
+        }
+
+        return null;
     } catch (e) {
         console.log(e);
     }

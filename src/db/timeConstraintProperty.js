@@ -9,11 +9,11 @@ export default ({ before = {}, time_parameter }) => {
 
         if (time_parameter === 'week') {
             where.createdAt = {
-                [Op.gte]: sub(new Date(), { minutes: 5 }),
+                [Op.gte]: sub(new Date(), { days: 7 }),
             };
         } else if (time_parameter === 'month') {
             where.createdAt = {
-                [Op.gte]: sub(new Date(), { days: 1 }),
+                [Op.gte]: sub(new Date(), { days: 30 }),
             };
         } else if (time_parameter !== 'all') {
             throw new Error(
