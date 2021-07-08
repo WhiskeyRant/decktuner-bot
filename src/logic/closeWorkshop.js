@@ -14,6 +14,12 @@ export default async ({ msg, force }) => {
             channel_id: msg.channel.id,
         });
 
+        if (!workshop) {
+            return msg.channel.send(
+                "Database error. Contact an administrator."
+            );
+        }
+
         if (!force) {
             logEvent({
                 id: 'command_close_self',
@@ -78,16 +84,14 @@ export default async ({ msg, force }) => {
             },
         });
 
-        await Promise.all([
-            logClosedWorkshop({ msg, force, embed: embeds[0] }),
-            msg.channel.delete(),
-            post.delete(),
-        ]);
         if (!force) {
             pilot.send(
                 '✅ The workshop has been successfully closed and your feedback has been submitted. Thanks for using DeckTuner!'
             );
         }
+
+        await msg.channel.delete(),
+            await Promise.all([logClosedWorkshop({ msg, force, embed: embeds[0] }), post.delete()]);
     } catch (e) {
         console.log(e);
     }

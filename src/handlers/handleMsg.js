@@ -1,12 +1,11 @@
 import settings from '../../src/data/settings';
-import { findCardByName, findWorkshopById } from '../db/controllers';
 import closeWorkshop from '../logic/closeWorkshop';
 import updateCardAPI from '../logic/updateCardAPI';
+import logEvent from '../utils/logEvent';
 import tunerParticipation from '../utils/tunerParticipation';
 import leaderboard from './commands/command.leaderboard';
 import points from './commands/command.points';
 import tune from './commands/command.tune';
-import logEvent from '../utils/logEvent';
 
 const handleMsg = async (msg) => {
     try {

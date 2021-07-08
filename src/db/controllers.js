@@ -71,6 +71,10 @@ export const findWorkshopById = async ({ channel_id }) => {
             include: User,
         });
 
+        if (!workshop) {
+            return [null, null];
+        }
+
         const tuners = await workshop.getTuners();
 
         return [workshop, tuners];
