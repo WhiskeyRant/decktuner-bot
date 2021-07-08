@@ -15,9 +15,7 @@ export default async ({ msg, force }) => {
         });
 
         if (!workshop) {
-            return msg.channel.send(
-                "Database error. Contact an administrator."
-            );
+            return msg.channel.send('Database error. Contact an administrator.');
         }
 
         if (!force) {
@@ -90,8 +88,8 @@ export default async ({ msg, force }) => {
             );
         }
 
-        await msg.channel.delete(),
-            await Promise.all([logClosedWorkshop({ msg, force, embed: embeds[0] }), post.delete()]);
+        await msg.channel.delete();
+        await Promise.all([logClosedWorkshop({ msg, force, embed: embeds[0] }), post.delete()]);
     } catch (e) {
         console.log(e);
     }
