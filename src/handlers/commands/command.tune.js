@@ -14,7 +14,7 @@ export default async ({ msg }) => {
             );
         }
         if (
-            !(await findWorkshopByPilot({ pilot: msg.author.id + 'a' })) &&
+            await findWorkshopByPilot({ pilot: msg.author.id }) &&
             process.env.NODE_ENV === 'production'
         ) {
             return msg.reply(
