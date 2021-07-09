@@ -70,7 +70,11 @@ export default async ({ msg, force }) => {
         const channel_name = msg.channel.name;
         const channel_tag = channel_name.slice(channel_name.length - 3);
 
-        msg.guild.roles.cache.find((role) => role.name === `role-${channel_tag}`).delete();
+
+        const designated_pilot_role = msg.guild.roles.cache.find((role) => role.name === `role-${channel_tag}`);
+        if (designated_pilot_role) {
+            designated_pilot_role.delete();
+        }
 
         //finish
 

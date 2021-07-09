@@ -1,7 +1,7 @@
 const collectClick = async ({ buttoned_msg }) => {
     try {
         const collector = await buttoned_msg.awaitButtons(() => true, {
-            time: 3 * 60 * 1000,
+            time: 10 * 1000,
             max: 1,
         });
         const clicked_button = collector.first();
