@@ -23,9 +23,16 @@ const updateCardAPI = async ({msg}) => {
             const real_card = Object.entries(x.legalities).some(
                 ([format, legality]) => legality === 'legal' && format !== 'future'
             );
+            // if (x.name.includes('Aminatou, the Fateshifter')) {
+            //     console.log(x);
+            //     console.log(type_line.includes('legend'));
+            //     console.log(type_line.includes('creature'));
+            //     console.log(real_card);
+            //     console.log((x.image_uris || x.card_faces));
+            // }
             return (
                 type_line.includes('legend') &&
-                type_line.includes('creature') &&
+                (type_line.includes('creature') || type_line.includes('planeswalker')) &&
                 real_card &&
                 (x.image_uris || x.card_faces)
             );
