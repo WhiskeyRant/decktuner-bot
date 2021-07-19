@@ -6,6 +6,7 @@ import tunerParticipation from '../utils/tunerParticipation';
 import leaderboard from './commands/command.leaderboard';
 import points from './commands/command.points';
 import tune from './commands/command.tune';
+import pickwinner from './commands/command.pickwinner';
 
 const handleMsg = async (msg) => {
     try {
@@ -26,6 +27,12 @@ const handleMsg = async (msg) => {
             msg.member.roles.cache.some((role) => role.name.toLowerCase().trim() === 'admin')
         ) {
             updateCardAPI({ msg });
+        }
+        if (
+            msg.content.startsWith('!pickwinner') &&
+            msg.member.roles.cache.some((role) => role.name.toLowerCase().trim() === 'admin')
+        ) {
+            pickwinner({ commandMsg: msg });
         }
         if (msg.content.startsWith('!points')) {
             points({ msg });

@@ -9,6 +9,7 @@ export default async ({ msg }) => {
         msg.channel.startTyping();
 
         const time_parameter = parseTimeParameter({ content: msg.content });
+        console.log(time_parameter);
 
         const [user] = await findFeedbackByUserId({
             user_id: msg.author.id,

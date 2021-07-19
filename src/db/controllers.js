@@ -83,7 +83,7 @@ export const findWorkshopById = async ({ channel_id }) => {
     }
 };
 
-/** 
+/**
  * Retrieves a workshop by the pilot's Discord ID, returning null if no matching cards were found.
  * @param {object} pilot - Pilot's Discord ID
  * @returns {object|undefined} - Returns workshop object, returning null if none were found.
@@ -93,7 +93,7 @@ export const findWorkshopByPilot = async ({ pilot }) => {
         const { Workshop } = await models();
 
         const workshop = await Workshop.findOne({
-            where: { pilot }
+            where: { pilot },
         });
 
         return workshop ? workshop.toJSON() : null;
@@ -117,8 +117,6 @@ export const findFeedbackByUserId = async ({ user_id, time_parameter }) => {
     try {
         const { Feedback } = await models();
         const sequelize = db.use();
-        // const negatives_literal = `(SELECT COUNT(score), user_id FROM feedback WHERE score = -1 AND user_id = ${user_id})`
-        // const positives_literal = `(SELECT COUNT(score), user_id FROM feedback WHERE score = 1 AND user_id = ${user_id})`
 
         const user = await Feedback.findAll({
             where: timeConstraintProperty({
@@ -133,9 +131,6 @@ export const findFeedbackByUserId = async ({ user_id, time_parameter }) => {
                     sequelize.literal(countVotesLiteral({ user_id, attitude: -1 })),
                     'total_negatives',
                 ],
-                // [sequelize.fn('count', sequelize.literal('SELECT score FROM feedback WHERE score = 1')), 'total_positive'],
-                // [sequelize.literal(negatives_literal), 'total_negatives'],
-                // [sequelize.literal(positives_literal), 'total_positives'],
             ],
             group: ['user_id'],
         });
@@ -154,6 +149,13 @@ export const findHighestFeedback = async ({ time_parameter }) => {
             get week() {
                 return sub(new Date(), { days: 7 });
             },
+            get cmonth() {
+                let date = new Date();
+                date.setDate(1);
+                date.setHours(0, 0, 0, 0);
+
+                return date;
+            },
             get month() {
                 return sub(new Date(), { days: 30 });
             },
@@ -161,6 +163,7 @@ export const findHighestFeedback = async ({ time_parameter }) => {
                 return sub(new Date(), { years: 10 });
             },
         }[time_parameter];
+        console.log(time_stamp);
 
         const leaderboard = await sequelize.query(countVotesAllLiteral, {
             bind: [time_stamp],
@@ -168,6 +171,32 @@ export const findHighestFeedback = async ({ time_parameter }) => {
         });
 
         return leaderboard;
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+export const randomFeedback = async () => {
+    try {
+        const { Feedback } = await models();
+        const sequelize = db.use();
+
+        let date = new Date();
+        date.setDate(1);
+        date.setHours(0, 0, 0, 0);
+
+        const user = await Feedback.findAll({
+            where: {
+                score: 1,
+                createdAt: {
+                    [Op.gte]: date,
+                }
+            },
+            order: sequelize.random(),
+            limit: 1,
+        });
+
+        return user;
     } catch (e) {
         console.log(e);
     }
@@ -201,7 +230,7 @@ export const addCard = async ({ card, cards }) => {
     }
 };
 
-/** 
+/**
  * Retrieves a card by name, returning null if no matching cards were found.
  * @param {object} search - The text to search for. Case sensitive
  * @returns {object|undefined} - Returns the card object from the database, or returns null if no cards were found.

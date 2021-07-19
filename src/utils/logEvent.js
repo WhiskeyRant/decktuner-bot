@@ -12,6 +12,7 @@ export default async ({ id, details }) => {
             'command_leaderboard',
             'command_close_self',
             'command_close_force_bad_permissions',
+            'command_pickwinner',
             'tuner_participation',
             'workshop_open_interview_collect_answer',
             'workshop_open_success',
@@ -117,6 +118,7 @@ const constructLogMsg = ({
             'workshop_interview_begin',
             'command_points',
             'command_leaderboard',
+            'command_pickwinner',
         ].includes(id)
     ) {
         output.push(

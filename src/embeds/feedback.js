@@ -25,13 +25,6 @@ export default {
                 url: 'https://decktuner.com',
             },
             timestamp: new Date(),
-            footer: {
-                text:
-                    'Points By ' +
-                    { week: 'Week', month: 'Month', all: 'All Time' }[
-                        time_parameter
-                    ],
-            },
             thumbnail: {
                 url: top_user
                     ? getAvatarLink({
@@ -42,7 +35,8 @@ export default {
             },
         };
 
-        if (!leaderboard) {
+
+        if (!leaderboard && points) {
             embed.fields = [
                 {
                     name: `${user.tag}`,
@@ -51,10 +45,10 @@ export default {
                         .replace(/[.,]00$/, '')}%)`,
                 },
             ];
-        } else {
+        } else if (leaderboard) {
             embed.fields = [
                 {
-                    name: `\u200b`,
+                    name: `⭐ __Leaderboard__ ⭐`,
                     value: leaderboard.map(
                         (x, i) =>
                             `${i+1}. <@${x.user_id}>: ${x.total_score} ${getIndRatio({
@@ -64,6 +58,23 @@ export default {
                     ),
                 },
             ];
+        } else {
+            embed.fields = [
+                {
+                    name: `⭐ Winner: ${user.tag}`,
+                    value: `ID: ${user.id}`,
+                },
+            ];
+        }
+
+        if (points || leaderboard) {
+            embed.footer = {
+                text:
+                    'Points By ' +
+                    { week: 'Week', month: 'Month', all: 'All Time' }[
+                        time_parameter
+                    ],
+            }
         }
 
         return embed;
