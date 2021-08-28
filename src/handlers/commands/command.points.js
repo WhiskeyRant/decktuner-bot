@@ -1,7 +1,7 @@
 import parseTimeParameter from '../../utils/parseTimeParameter';
 import { findFeedbackByUserId } from '../../db/controllers';
-import feedback from '../../embeds/feedback';
 import logEvent from '../../utils/logEvent';
+import Response from '../../utils/Response';
 
 export default async ({ msg }) => {
     try {
@@ -9,7 +9,6 @@ export default async ({ msg }) => {
         msg.channel.startTyping();
 
         const time_parameter = parseTimeParameter({ content: msg.content });
-        console.log(time_parameter);
 
         const [user] = await findFeedbackByUserId({
             user_id: msg.author.id,
@@ -18,19 +17,21 @@ export default async ({ msg }) => {
 
         if (!user) {
             msg.channel.stopTyping();
-            return msg.reply('No feedback found for the given time parameter.');
+            return Response.reject({
+                msg,
+                ref: 'no_score',
+            });
         }
 
         msg.channel.stopTyping();
-        msg.reply({
-            embed: feedback.create({
+
+        Response.sendEmbed({
+            ref: 'points',
+            msg,
+            details: {
                 time_parameter,
-                user: msg.author,
-                points: user.toJSON().total_score,
-                ratio:
-                    +user.toJSON().total_positives /
-                    (+user.toJSON().total_positives + +user.toJSON().total_negatives),
-            }),
+                user: user.toJSON(),
+            },
         });
     } catch (err) {
         console.log(err);

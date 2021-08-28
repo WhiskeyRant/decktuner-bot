@@ -1,5 +1,5 @@
 import getAvatarLink from '../utils/getAvatarLink';
-import settings from '../data/settings';
+import settings from '../config/settings';
 
 const cl = (arr) => arr.filter((x) => x); // clean array of undefined items (for fields)
 

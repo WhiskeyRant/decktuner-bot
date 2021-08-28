@@ -1,12 +1,19 @@
-import { feedbackRow } from '../buttons/row';
+import { actionRow } from '../buttons/row';
 import collectClick from '../collectors/collectClick';
-import settings from '../data/settings';
-import { addUserFeedback, deleteWorkshop, findWorkshopById } from '../db/controllers';
+import settings from '../config/settings';
+import {
+    addUserFeedback,
+    deleteWorkshop,
+    findFeedbackByUserId,
+    findWorkshopById,
+} from '../db/controllers';
 import questionPrompt from '../embeds/questionPrompt';
 import client from '../utils/client';
 import getAvatarLink from '../utils/getAvatarLink';
 import { logClosedWorkshop, logFeedback } from '../utils/logHistory';
 import logEvent from '../utils/logEvent';
+import Response from '../utils/Response';
+import Embed from '../embeds/Embed';
 
 export default async ({ msg, force }) => {
     try {
@@ -15,7 +22,7 @@ export default async ({ msg, force }) => {
         });
 
         if (!workshop) {
-            return msg.channel.send('Database error. Contact an administrator.');
+            return Response.reject({ msg, ref: 'workshop_db_error' });
         }
 
         if (!force) {
@@ -27,8 +34,8 @@ export default async ({ msg, force }) => {
             });
         }
 
-        const pilot = await msg.guild.members.fetch(workshop.toJSON().pilot);
         if (!force) {
+            const pilot = await msg.guild.members.fetch(workshop.toJSON().pilot);
             msg.channel.send({
                 embed: questionPrompt.create({
                     question: [
@@ -40,19 +47,45 @@ export default async ({ msg, force }) => {
             });
 
             const tuner_user_data = await getTunerUserData({ msg, tuners });
+            let feedbackLeftForTuners = [];
 
             for (let i = 0; i < tuner_user_data.length; i++) {
-                const { timed_out } = await processFeedbackQuestion({
-                    tuner: tuner_user_data[i],
-                    pilot,
-                });
+                if (tuner_user_data[i].id !== workshop.toJSON().pilot) {
+                    const { attitude, tuner_id, timed_out } = await processFeedbackQuestion({
+                        tuner: tuner_user_data[i],
+                        pilot,
+                    });
 
-                if (timed_out) {
-                    return msg.channel.send(
-                        "Looks like feedback question prompt expired. Restart the feedback process when you're ready."
-                    );
+                    if (timed_out) {
+                        return Response.reply({ msg, ref: 'expired_feedback_prompt' });
+                    }
+
+                    feedbackLeftForTuners.push({ attitude, tuner_id });
                 }
             }
+
+            for (let i = 0; i < feedbackLeftForTuners.length; i++) {
+                const tuner = feedbackLeftForTuners[i];
+                const user = await addUserFeedback({
+                    user_id: tuner.tuner_id,
+                    attitude: tuner.attitude,
+                });
+
+                if (!user) throw new Error('Something went wrong when trying to leave feedback.');
+
+                const [userFeedbackRecord] = await findFeedbackByUserId({
+                    user_id: user.toJSON().user_id,
+                });
+                // const { total_positives } = userFeedbackRecord.toJSON();
+
+                // if (total_positives >= 1) {
+                //     await promoteTuner({ user_id: tuner.tuner_id, members: msg.guild.members });
+                // }
+            }
+
+            pilot.send(
+                '✅ The workshop has been successfully closed and your feedback has been submitted. Thanks for using DeckTuner!'
+            );
         }
 
         const pinned_messages = await msg.channel.messages.fetchPinned();
@@ -70,8 +103,9 @@ export default async ({ msg, force }) => {
         const channel_name = msg.channel.name;
         const channel_tag = channel_name.slice(channel_name.length - 3);
 
-
-        const designated_pilot_role = msg.guild.roles.cache.find((role) => role.name === `role-${channel_tag}`);
+        const designated_pilot_role = msg.guild.roles.cache.find(
+            (role) => role.name === `role-${channel_tag}`
+        );
         if (designated_pilot_role) {
             designated_pilot_role.delete();
         }
@@ -86,12 +120,6 @@ export default async ({ msg, force }) => {
             },
         });
 
-        if (!force) {
-            pilot.send(
-                '✅ The workshop has been successfully closed and your feedback has been submitted. Thanks for using DeckTuner!'
-            );
-        }
-
         await msg.channel.delete();
         await Promise.all([logClosedWorkshop({ msg, force, embed: embeds[0] }), post.delete()]);
     } catch (e) {
@@ -102,29 +130,34 @@ export default async ({ msg, force }) => {
 const processFeedbackQuestion = async ({ tuner, pilot }) => {
     try {
         // send feedback prompt
-        const embed = questionPrompt.create({
-            question: `How did you feel about the help you received from ${tuner.name}?`,
-            details: {
-                thumbnail: tuner.pfp,
-            },
-        });
-        const feedback_question_first = await pilot.send({
-            embed,
-        });
+        // const embed = questionPrompt.create({
+        //     question: `How did you feel about the help you received from ${tuner.name}?`,
+        //     details: {
+        //         thumbnail: tuner.pfp,
+        //     },
+        // });
+        // const feedback_question_first = await pilot.send({
+        //     embed,
+        // });
 
-        const feedback_question_edited = await feedback_question_first.edit({
-            embed,
-            component: feedbackRow({ message_id: feedback_question_first.id }),
+        const prompt = new Embed({
+            ref: 'feedback',
+            details: { name: tuner.name, thumbnail: tuner.pfp },
         });
+        const promptMsg = await prompt.send({ to: pilot });
+
+        // const feedback_question_edited = await feedback_question_first.edit({
+        //     embed,
+        //     component: actionRow({ ref: 'feedback', message_id: feedback_question_first.id }),
+        // });
 
         // await response and then process response
-        const click = await collectClick({
-            buttoned_msg: feedback_question_edited,
+        const {choice, timed_out, error} = await collectClick({
+            buttoned_msg: promptMsg,
         });
-        if (click.timed_out) {
-            feedback_question_edited.edit(
-                '*This message was a feedback question prompt that has now expired.*'
-            );
+
+        if (timed_out) {
+            promptMsg.edit('*This message was a feedback question prompt that has now expired.*');
 
             logEvent({
                 id: 'feedback_button_click',
@@ -137,40 +170,38 @@ const processFeedbackQuestion = async ({ tuner, pilot }) => {
 
             return {
                 timed_out: true,
-                error: click.error,
+                error: error,
             };
         }
-        const change = click.confirmed ? 1 : click.rejected ? -1 : 0;
 
         logEvent({
             id: 'feedback_button_click',
             details: {
-                change,
+                choice,
                 tuner,
                 pilot,
             },
         });
 
         // finish
-        feedback_question_first.edit({
-            embed,
-            component: feedbackRow({
-                disabled: true,
-                message_id: feedback_question_first.id,
-                chosen: change,
-            }),
-        });
+        // feedback_question_first.edit({
+        //     embed,
+        //     component: actionRow({
+        //         ref: 'feedback',
+        //         disabled: true,
+        //         message_id: feedback_question_first.id,
+        //         chosen: change,
+        //     }),
+        // });
+
+        await prompt.chooseBtn({ choice });
         logFeedback({
             pilot: pilot.id,
             tuner: tuner.id,
-            change,
-        });
-        addUserFeedback({
-            user_id: tuner.id,
-            attitude: change,
+            choice,
         });
 
-        return {};
+        return { attitude: choice, tuner_id: tuner.id };
     } catch (e) {
         console.log(e);
     }

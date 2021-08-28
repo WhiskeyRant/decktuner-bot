@@ -1,5 +1,5 @@
 import client from '../utils/client';
-import settings from '../data/settings';
+import settings from '../config/settings';
 import bountyListing from '../embeds/bountyListing';
 import logEvent from '../utils/logEvent';
 

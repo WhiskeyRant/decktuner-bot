@@ -1,24 +1,28 @@
 import logEvent from '../../../src/utils/logEvent';
-import settings from '../../data/settings';
+import settings from '../../config/settings';
 import { randomFeedback } from '../../db/controllers';
-import feedbackEmbed from '../../embeds/feedback';
+import Permissions from '../../utils/Permissions';
+// import feedbackEmbed from '../../embeds/feedback';
+import Embed from '../../embeds/Embed';
+import Response from '../../utils/Response';
 
 export default async ({ commandMsg }) => {
     try {
+        if (!Permissions.checkRole({ user: commandMsg.member, roles: 'admin' })) return;
+
         logEvent({ id: 'command_pickwinner', details: { msg: commandMsg } });
-        const pleaseWaitMsg = await commandMsg.channel.send(
-            `${settings.emoji('loading')} Picking a winner... This may take a few moments.`
-        );
+
+        const pleaseWaitMsg = await Response.reply({
+            channel: commandMsg.channel,
+            ref: 'pickwinner_please_wait',
+        });
 
         const [feedback] = await randomFeedback();
 
         const { user: winner } = await commandMsg.guild.members.fetch(feedback.toJSON().user_id);
 
-        pleaseWaitMsg.edit('', {
-            embed: feedbackEmbed.create({
-                user: winner,
-            }),
-        });
+        const embed = new Embed({ ref: 'pickwinner', details: { winner } });
+        await embed.edit({ msg: pleaseWaitMsg });
     } catch (e) {
         console.log(e);
     }

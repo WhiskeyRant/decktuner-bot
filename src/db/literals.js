@@ -20,3 +20,8 @@ GROUP BY user_id
 ORDER BY total_score DESC
 LIMIT 10
 )`;
+
+export const deleteFeedbackLiteral = `
+DELETE FROM feedback
+WHERE id = any (array(SELECT id FROM feedback WHERE user_id = $1 ORDER BY "createdAt" LIMIT $2));
+`

@@ -1,7 +1,6 @@
 require('dotenv').config();
 const { Sequelize } = require('sequelize');
 
-
 class db {
     static sequelize;
 
@@ -18,7 +17,7 @@ class db {
                 dialectOptions: {
                     ssl: {
                         require: true,
-                        rejectUnauthorized: false
+                        rejectUnauthorized: false,
                     },
                 },
             });

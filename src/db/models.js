@@ -19,7 +19,7 @@ const models = async () => {
                 user_id: {
                     ...generatedIDAsPK,
                     field: 'user_id',
-                }
+                },
             },
             {
                 tableName: 'users',
@@ -88,13 +88,14 @@ const models = async () => {
                 scryfall_id: {
                     type: DataTypes.STRING,
                     allowNull: false,
-                    unique: true
-                }
+                    unique: true,
+                },
             },
             {
                 tableName: 'cards',
             }
         );
+
 
         // workshop will have a column called "pilot"
         Workshop.belongsTo(User, {
@@ -104,7 +105,7 @@ const models = async () => {
 
         User.hasMany(Feedback, {
             as: 'feedback',
-            foreignKey: 'user_id'
+            foreignKey: 'user_id',
         });
         Feedback.belongsTo(User, {
             foreignKey: 'user_id',
@@ -126,7 +127,9 @@ const models = async () => {
 
         await sequelize.sync();
 
-        return { Workshop, User, Feedback, Card };
+        const AllModels = [Workshop, User, Feedback, Card];
+
+        return { Workshop, User, Feedback, Card, AllModels };
     } catch (e) {
         console.log(e);
     }

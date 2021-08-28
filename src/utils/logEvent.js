@@ -46,8 +46,7 @@ const constructLogMsg = ({
         pilot,
         change,
         force,
-        confirmed,
-        rejected,
+        choice
     },
 }) => {
     const id_key = chalk.cyan('id:');
@@ -104,11 +103,8 @@ const constructLogMsg = ({
     const force_key = chalk.cyan('Forced:');
     const force_value = force && chalk.greenBright(force);
 
-    const confirmed_key = chalk.cyan('Confirmed:');
-    const confirmed_value = confirmed && chalk.greenBright(confirmed);
-
-    const rejected_key = chalk.cyan('Rejected:');
-    const rejected_value = rejected && chalk.greenBright(rejected);
+    const choice_key = chalk.cyan('Choice:');
+    const choice_value = choice && chalk.greenBright(choice);
 
     const output = [`${id_key} ${id_value} --- ${date_field}`];
 
@@ -170,8 +166,7 @@ const constructLogMsg = ({
         output.push(
             `---- ${user_key} ${user_value}`,
             expired && `---- ${expired_key} ${expired_value}`,
-            confirmed && `---- ${confirmed_key} ${confirmed_value}`,
-            rejected && `---- ${rejected_key} ${rejected_value}`
+            choice && `---- ${choice_key} ${choice_value}`
         );
     }
 

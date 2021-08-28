@@ -1,5 +1,5 @@
 import client from './client';
-import settings from '../data/settings';
+import settings from '../config/settings';
 
 export default () => {
     let workshop_suffix;

@@ -1,10 +1,12 @@
 import axios from 'axios';
-import settings from '../data/settings';
+import settings from '../config/settings';
 import { addCard } from '../db/controllers';
 import logEvent from '../utils/logEvent';
+import Permissions from '../utils/Permissions';
 
-const updateCardAPI = async ({msg}) => {
+const updateCardAPI = async ({ msg }) => {
     try {
+        if (!Permissions.checkRole({ user: msg.member, roles: 'admin' })) return;
         logEvent({
             id: 'update_card_api',
             details: {
@@ -13,7 +15,7 @@ const updateCardAPI = async ({msg}) => {
         });
         const { data: bulk_data_dir } = await axios.get('https://api.scryfall.com/bulk-data');
 
-        msg.channel.send(`${settings.emoji('loading')} Starting... This may take a few moments.`)
+        msg.channel.send(`${settings.emoji('loading')} Starting... This may take a few moments.`);
         const { download_uri } = bulk_data_dir.data.find((ref) => ref.type === 'unique_artwork');
         const { data } = await axios.get(download_uri);
 
@@ -37,7 +39,11 @@ const updateCardAPI = async ({msg}) => {
                 (x.image_uris || x.card_faces)
             );
         });
-        msg.channel.send(`${settings.emoji('loading')} Finished fetch from Scryfall API, now submitting data to database.`);
+        msg.channel.send(
+            `${settings.emoji(
+                'loading'
+            )} Finished fetch from Scryfall API, now submitting data to database.`
+        );
 
         // filter out unnecessary data for each card
         const formatted_legends = legends.map((x) => ({
@@ -52,12 +58,13 @@ const updateCardAPI = async ({msg}) => {
             scryfall_id: x.id,
         }));
 
-
         // process submission to the database
         const submission = await addCard({ cards: formatted_legends });
-        const total_additions = submission.reduce((acc, item) => item[1] ? acc + 1 : acc, 0);
+        const total_additions = submission.reduce((acc, item) => (item[1] ? acc + 1 : acc), 0);
         const total_count = submission.length;
-        msg.channel.send(`✅ Finished submitting to the database. There were ${total_additions} new additions, resulting in ${total_count} total valid commanders available.`)
+        msg.channel.send(
+            `✅ Finished submitting to the database. There were ${total_additions} new additions, resulting in ${total_count} total valid commanders available.`
+        );
     } catch (e) {
         console.log(e);
     }

@@ -1,4 +1,4 @@
-import settings from '../data/settings';
+import settings from '../config/settings';
 import { addTunerToWorkshop, findWorkshopById, createUser } from '../db/controllers';
 import client from './client';
 import logEvent from './logEvent';

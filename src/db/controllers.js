@@ -1,10 +1,12 @@
-import models from './models';
-import db from './init';
-import timeConstraintProperty from './timeConstraintProperty';
-import { countVotesAllLiteral, countVotesLiteral } from './literals';
-import { QueryTypes, Op } from 'sequelize';
 import { sub } from 'date-fns';
+import { Op, QueryTypes } from 'sequelize';
+import Permissions from '../utils/Permissions';
+import db from './init';
+import { countVotesAllLiteral, countVotesLiteral, deleteFeedbackLiteral } from './literals';
+import models from './models';
+import timeConstraintProperty from './timeConstraintProperty';
 
+// tested
 export const createUser = async ({ user_id }) => {
     try {
         const { User } = await models();
@@ -13,23 +15,6 @@ export const createUser = async ({ user_id }) => {
             defaults: {
                 user_id,
             },
-        });
-    } catch (e) {
-        console.log(e);
-    }
-};
-
-export const addUserFeedback = async ({ user_id, attitude }) => {
-    try {
-        const { Feedback } = await models();
-
-        if (![-1, 0, 1].some((x) => x === attitude)) {
-            throw new Error('Attitude value invalid' + JSON.stringify({ user_id, attitude }));
-        }
-
-        return Feedback.create({
-            score: attitude,
-            user_id,
         });
     } catch (e) {
         console.log(e);
@@ -113,16 +98,46 @@ export const addTunerToWorkshop = async ({ channel_id, user_id }) => {
     }
 };
 
+export const addUserFeedback = async ({ user_id, attitude }) => {
+    try {
+        const { Feedback } = await models();
+
+        if ([-1, 0, 1].every((x) => x !== attitude))
+            throw new Error('Attitude value invalid' + JSON.stringify({ user_id, attitude }));
+
+        const [userWithTotalFeedback] = await findFeedbackByUserId({ user_id });
+
+        const { total_score } = userWithTotalFeedback
+            ? userWithTotalFeedback.toJSON()
+            : { total_score: 0 };
+
+        if (total_score >= 30) {
+            Permissions.grantRole({ user: user_id, role: 'lead tuner' });
+        } else {
+            Permissions.removeRole({ user: user_id, role: 'lead tuner' });
+        }
+
+        return Feedback.create({
+            score: attitude,
+            user_id,
+        });
+    } catch (e) {
+        console.log(e);
+    }
+};
+
 export const findFeedbackByUserId = async ({ user_id, time_parameter }) => {
     try {
         const { Feedback } = await models();
         const sequelize = db.use();
 
         const user = await Feedback.findAll({
-            where: timeConstraintProperty({
-                before: { user_id },
-                time_parameter,
-            }),
+            where: {
+                user_id,
+                createdAt: timeConstraintProperty({
+                    time_parameter,
+                }),
+            },
             attributes: [
                 'user_id',
                 [sequelize.fn('sum', sequelize.col('score')), 'total_score'],
@@ -163,7 +178,6 @@ export const findHighestFeedback = async ({ time_parameter }) => {
                 return sub(new Date(), { years: 10 });
             },
         }[time_parameter];
-        console.log(time_stamp);
 
         const leaderboard = await sequelize.query(countVotesAllLiteral, {
             bind: [time_stamp],
@@ -190,13 +204,60 @@ export const randomFeedback = async () => {
                 score: 1,
                 createdAt: {
                     [Op.gte]: date,
-                }
+                },
             },
             order: sequelize.random(),
             limit: 1,
         });
 
         return user;
+    } catch (e) {
+        console.log(e);
+    }
+};
+
+export const modifyFeedback = async ({ amount, user_id }) => {
+    try {
+        const { Feedback } = await models();
+        const sequelize = db.use();
+
+        await createUser({ user_id });
+
+        const [userWithTotalFeedback] = await findFeedbackByUserId({ user_id });
+
+        const { total_score } = userWithTotalFeedback
+            ? userWithTotalFeedback.toJSON()
+            : { total_score: 0 };
+
+        const total_difference = Number(amount) - Number(total_score);
+
+        if (total_difference === 0) {
+            return { success: true, total_difference };
+        } else if (total_difference > 0) {
+            await Feedback.bulkCreate(
+                Array(total_difference).fill({
+                    score: 1,
+                    user_id,
+                })
+            );
+        } else {
+            await sequelize.query(deleteFeedbackLiteral, {
+                bind: [user_id, Math.abs(total_difference)],
+                type: QueryTypes.DELETE,
+            });
+        }
+
+        // const guild = client.guilds.cache.get(settings.server());
+        // const tuner = guild.members.cache.get(user_id);
+        // const role = guild.roles.cache.find((role) => role.name.toLowerCase() === 'lead tuner');
+        if (amount >= 30) {
+            Permissions.grantRole({ user: user_id, role: 'lead tuner' });
+            // tuner.roles.add(role);
+        } else {
+            Permissions.removeRole({ user: user_id, role: 'lead tuner' });
+            // tuner.roles.remove(role);
+        }
+        return { success: true, total_difference };
     } catch (e) {
         console.log(e);
     }

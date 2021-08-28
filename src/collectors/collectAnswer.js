@@ -1,26 +1,33 @@
 import logEvent from '../utils/logEvent';
 import questionPrompt from '../embeds/questionPrompt';
 import interviewAnswerReducer from '../utils/interviewAnswerReducer';
+import Response from '../utils/Response';
+import Embed from '../embeds/Embed';
 const mergeImages = require('merge-images');
 const { Canvas, Image } = require('canvas');
 
 const collectAnswer = async ({ question, channel, i, questions_length, user }) => {
     try {
-        const embed = questionPrompt.create({
-            question: question.question,
-            details: question.details,
-            i,
-            questions_length,
-        });
-        await channel.send({ embed });
+        // const embed = questionPrompt.create({
+        //     question: question.question,
+        //     details: question.details,
+        //     i,
+        //     questions_length,
+        // });
+        // await channel.send({ embed });
+
+        const prompt = new Embed({ ref: 'confirmation', details: { question, i } });
+        const test = await prompt.send({ to: channel });
 
         const collected = await channel.awaitMessages((response) => response, {
             max: 1,
             time: 3 * 60 * 1000,
         });
 
-        const closing = collected.size && ['!cancel', '!close'].some((x) => collected.first().content.startsWith(x));
-
+        const closing =
+            collected.size &&
+            ['!cancel', '!close'].some((x) => collected.first().content.startsWith(x));
+        
         logEvent({
             id: 'workshop_open_interview_collect_answer',
             details: {
@@ -28,7 +35,7 @@ const collectAnswer = async ({ question, channel, i, questions_length, user }) =
                 msg: collected.first(),
                 closing,
                 question_key: question.key,
-                user
+                user,
             },
         });
 

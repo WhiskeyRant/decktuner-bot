@@ -1,5 +1,5 @@
 import collectAnswer from '../collectors/collectAnswer';
-import interview_questions from '../data/interview_questions';
+import interview_questions from '../config/interview_questions';
 import ActiveInterviews from '../utils/ActiveInterviews';
 import endInterview from './endInterview';
 import logEvent from '../utils/logEvent';

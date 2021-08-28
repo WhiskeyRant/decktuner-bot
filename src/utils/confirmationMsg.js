@@ -1,4 +1,4 @@
-import { confirmationRow } from '../buttons/row';
+import { actionRow } from '../buttons/row';
 import bountyListing from '../embeds/bountyListing';
 
 const confirmation_msg_text =
@@ -11,14 +11,12 @@ export const createConfirmationMsg = async ({ intro_msg, answers, msg }) => {
             author: msg.author,
         });
 
-        const preview_msg = await intro_msg.channel.send(
-            confirmation_msg_text,
-            {
-                embed: embed,
-            }
-        );
+        const preview_msg = await intro_msg.channel.send(confirmation_msg_text, {
+            embed: embed,
+        });
         const edited_msg = await preview_msg.edit(confirmation_msg_text, {
-            component: confirmationRow({
+            component: actionRow({
+                ref: "confirmation",
                 message_id: preview_msg.id,
             }),
             embed: embed,
@@ -30,14 +28,15 @@ export const createConfirmationMsg = async ({ intro_msg, answers, msg }) => {
     }
 };
 
-export const editRejectedMsg = async ({ embed, confirmation_msg, verbage = "cancelled" }) => {
+export const editRejectedMsg = async ({ embed, confirmation_msg, verbage = 'cancelled' }) => {
     try {
         confirmation_msg.channel.send(
             `❌ Tuning initiation ${verbage}. You can start the process again by typing !tune in the #get-help channel on the server.`
         );
 
         confirmation_msg.edit(confirmation_msg_text, {
-            component: confirmationRow({
+            component: actionRow({
+                ref: "confirmation",
                 message_id: confirmation_msg.id,
                 disabled: true,
             }),
@@ -51,7 +50,8 @@ export const editRejectedMsg = async ({ embed, confirmation_msg, verbage = "canc
 export const editApprovedMsg = async ({ embed, confirmation_msg }) => {
     try {
         return confirmation_msg.edit(confirmation_msg_text, {
-            component: confirmationRow({
+            component: actionRow({
+                ref: "confirmation",
                 message_id: confirmation_msg.id,
                 disabled: true,
             }),

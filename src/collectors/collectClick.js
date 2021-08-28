@@ -18,13 +18,15 @@ const collectClick = async ({ buttoned_msg }) => {
 
         if (clicked_button.message.id == buttoned_msg.id) {
             clicked_button.defer();
-            if (clicked_button.id.includes('confirm')) {
-                return { confirmed: true };
+            if (clicked_button.id.includes('confirm') || clicked_button.id.includes('positive')) {
+                return { choice: 1 };
             } else if (clicked_button.id.includes('neutral')) {
-                return { neutral: true };
-            } else {
-                return { rejected: true };
+                return { choice: 0 };
+            } else if (clicked_button.id.includes('reject') || clicked_button.id.includes('negative')) {
+                return { choice: -1 };
             }
+            
+            throw new Error('button/message id mismatch')
         }
     } catch (e) {
         console.log(e);

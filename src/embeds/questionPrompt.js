@@ -1,9 +1,8 @@
-import settings from '../data/settings';
+import settings from '../config/settings';
 import getAvatarLink from '../utils/getAvatarLink';
 
-
 const cbWr = (str) => '```' + str + '```'; // code block wrapper
-const cl = (arr) => arr.filter(x => x); // clean array of undefined items (for fields)
+const cl = (arr) => arr.filter((x) => x); // clean array of undefined items (for fields)
 
 export default {
     create: ({ question, i, questions_length, details, attachment }) => {
@@ -19,35 +18,34 @@ export default {
                     name: '\u200b',
                     value: question,
                 },
-                details && details.body && {
-                    name: details.title,
-                    value: details.body,
-                },
+                details &&
+                    details.body && {
+                        name: details.title,
+                        value: details.body,
+                    },
             ]),
             timestamp: new Date(),
             footer: {
-                text: questions_length
-                    ? `Question ${i + 1} / ${questions_length}`
-                    : '',
+                text: questions_length ? `Question ${i + 1} / ${questions_length}` : '',
             },
         };
 
         if (details && details.image) {
             embed.image = {
-                url: details.image
-            }
+                url: details.image,
+            };
         }
 
         if (attachment) {
             embed.image = {
-                url: 'attachment://commanders.jpg'
-            }
+                url: 'attachment://commanders.jpg',
+            };
         }
 
         if (details && details.thumbnail) {
             embed.thumbnail = {
-                url: details.thumbnail
-            }
+                url: details.thumbnail,
+            };
         }
 
         return embed;

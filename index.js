@@ -1,7 +1,6 @@
 require('dotenv').config();
+import commandReducer from './src/handlers/commandReducer';
 import client from './src/utils/client';
-import handleMsg from './src/handlers/handleMsg';
-import getWorkshopTag from './src/utils/getWorkshopTag';
 
 client.on('ready', async () => {
     try {
@@ -11,6 +10,6 @@ client.on('ready', async () => {
     }
 });
 
-client.on('message', handleMsg);
+client.on('message', commandReducer);
 
 client.login(process.env.DISCORD_TOKEN);

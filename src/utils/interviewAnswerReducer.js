@@ -1,24 +1,23 @@
-import { confirmationRow } from '../buttons/row';
+import { actionRow } from '../buttons/row';
 import collectClick from '../collectors/collectClick';
-import settings from '../data/settings';
+import settings from '../config/settings';
 import questionPrompt from '../embeds/questionPrompt';
 import parseDeckLink from '../utils/parseDeckLink';
-import validateAnswerLength from '../utils/validateAnswerLength';
 import generatePartnerImage from './generatePartnerImage';
 import getCommanderData from './getCommanderData';
 import logEvent from './logEvent';
+import interviewAnswersCharLimit from '../config/interviewAnswersCharLimit';
 
 const interviewAnswerReducer = async ({ content, key, channel }) => {
     try {
-        const { valid: lengthValid, length } = validateAnswerLength({
-            content,
-            key,
-        });
+        const { max_length } = interviewAnswersCharLimit.find((x) => x.key === key);
+        const lengthValid = content.length <= max_length;
+
         if (lengthValid === false) {
             return {
                 content,
                 proceed: false,
-                error: `❌ Length of answer too long. Please cut down the length. Max char count: ${length}`,
+                error: `❌ Length of answer too long. Please cut down the length. Max char count: ${max_length}`,
             };
         }
 
@@ -68,13 +67,16 @@ const interviewAnswerReducer = async ({ content, key, channel }) => {
         const sent_question = await channel.send(msg_opt_default);
         const edited_question = await sent_question.edit({
             ...msg_opt_default,
-            component: confirmationRow({ message_id: sent_question.id }),
+            component: actionRow({
+                ref: 'confirmation',
+                message_id: sent_question.id,
+            }),
         });
 
         please_wait_msg.delete();
         channel.stopTyping();
 
-        const { confirmed, rejected, timed_out } = await collectClick({
+        const { choice, timed_out } = await collectClick({
             buttoned_msg: edited_question,
         });
 
@@ -83,21 +85,21 @@ const interviewAnswerReducer = async ({ content, key, channel }) => {
             details: {
                 expired: timed_out,
                 user: channel.recipient,
-                confirmed: !!confirmed,
-                rejected: !!rejected,
+                choice
             },
         });
 
         // error handling and editing the original message to be answered
         edited_question.edit({
             ...msg_opt_default,
-            component: confirmationRow({
+            component: actionRow({
+                ref: 'confirmation',
                 message_id: sent_question.id,
                 disabled: true,
             }),
         });
 
-        if (rejected) {
+        if (choice === -1) {
             return {
                 proceed: false,
                 error: '❌ Commander rejected. Try typing in a new commander name. Try to be more specific this time.',
@@ -124,7 +126,7 @@ const interviewAnswerReducer = async ({ content, key, channel }) => {
 
         return {
             content,
-            proceed: confirmed,
+            proceed: true,
             details: {
                 attachment: !!partner_image,
                 name: fetched_commander_list.map((cmdr) => cmdr.name).join(' + '),
