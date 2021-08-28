@@ -45,8 +45,8 @@
 - Once the `!close` command has been sent in a workshop by the chosen pilot, the feedback process will begin
 	- The user will be asked for feedback on each participating tuner. Once the process is complete, the workshop will be closed. 
 	
-### Lead Tuner Promotion
-- anytime a user gets points that would put their score past 30, they will get automatically promoted to a Lead Tuner role
+### Pro Tuner Promotion
+- anytime a user gets points that would put their score past 30, they will get automatically promoted to a Pro Tuner role
 	- this includes the !setpoints command
 
 ### `!close`

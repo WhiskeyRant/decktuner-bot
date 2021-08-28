@@ -112,9 +112,9 @@ export const addUserFeedback = async ({ user_id, attitude }) => {
             : { total_score: 0 };
 
         if (total_score >= 30) {
-            Permissions.grantRole({ user: user_id, role: 'lead tuner' });
+            Permissions.grantRole({ user: user_id, role: 'pro tuner' });
         } else {
-            Permissions.removeRole({ user: user_id, role: 'lead tuner' });
+            Permissions.removeRole({ user: user_id, role: 'pro tuner' });
         }
 
         return Feedback.create({
@@ -249,12 +249,12 @@ export const modifyFeedback = async ({ amount, user_id }) => {
 
         // const guild = client.guilds.cache.get(settings.server());
         // const tuner = guild.members.cache.get(user_id);
-        // const role = guild.roles.cache.find((role) => role.name.toLowerCase() === 'lead tuner');
+        // const role = guild.roles.cache.find((role) => role.name.toLowerCase() === 'pro tuner');
         if (amount >= 30) {
-            Permissions.grantRole({ user: user_id, role: 'lead tuner' });
+            Permissions.grantRole({ user: user_id, role: 'pro tuner' });
             // tuner.roles.add(role);
         } else {
-            Permissions.removeRole({ user: user_id, role: 'lead tuner' });
+            Permissions.removeRole({ user: user_id, role: 'pro tuner' });
             // tuner.roles.remove(role);
         }
         return { success: true, total_difference };

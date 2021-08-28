@@ -165,14 +165,11 @@ export default class Embed {
 
     #LEADERBOARD_EMBED({ details }) {
         try {
-            const { leaderboard, time_parameter } = details;
+            const { leaderboard, time_parameter, top_user } = details;
 
-            const guild = client.guilds.cache.get(settings.server());
-            const top_user_data = guild.members.cache.get(leaderboard[0].user_id);
-            if (!top_user_data) {
-                throw new Error('Couldnt find user when searching for top person in leaderboard.');
+            if (!top_user) {
+                throw new Error('No top user.');
             }
-            const { user: top_user } = top_user_data;
 
             const getIndRatio = ({ p, n }) => {
                 const ratio = +p / (+p + +n);
@@ -184,8 +181,8 @@ export default class Embed {
 
             this.embed.thumbnail = {
                 url: getAvatarLink({
-                    id: top_user.id,
-                    avatar: top_user.avatar,
+                    id: top_user.user.id,
+                    avatar: top_user.user.avatar,
                 }),
             };
 
