@@ -35,8 +35,19 @@ const openWorkshop = async ({ msg, fields, suffix, i = 0 }) => {
         // setting up role
         const role = await guild.roles.create({ data: { name: `role-${suffix}` } });
         const pilotRole = guild.roles.cache.find(x => x.name === "Pilot");
+        const moderatorRole = guild.roles.cache.find(x => x.name === "Moderator");
+        const adminRole = guild.roles.cache.find(x => x.name === "Admin");
+        const tunerRole = guild.roles.cache.find(x => x.name === "Tuner");
+        const proTunerRole = guild.roles.cache.find(x => x.name === "Pro Tuner");
+        const leadTunerRole = guild.roles.cache.find(x => x.name === "Lead Tuner");
+
         help_channel.updateOverwrite(role, { SEND_MESSAGES: true });
         help_channel.updateOverwrite(pilotRole, { SEND_MESSAGES: false });
+        help_channel.updateOverwrite(moderatorRole, { SEND_MESSAGES: true });
+        help_channel.updateOverwrite(adminRole, { SEND_MESSAGES: true });
+        help_channel.updateOverwrite(tunerRole, { SEND_MESSAGES: true });
+        leadTunerRole && help_channel.updateOverwrite(leadTunerRole, { SEND_MESSAGES: true });
+        proTunerRole && help_channel.updateOverwrite(proTunerRole, { SEND_MESSAGES: true });
         msg.member.roles.add(role);
         
         return help_channel;
