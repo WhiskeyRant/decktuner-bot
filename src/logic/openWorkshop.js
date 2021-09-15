@@ -34,7 +34,9 @@ const openWorkshop = async ({ msg, fields, suffix, i = 0 }) => {
         
         // setting up role
         const role = await guild.roles.create({ data: { name: `role-${suffix}` } });
+        const pilotRole = guild.roles.cache.find(x => x.name === "Pilot");
         help_channel.updateOverwrite(role, { SEND_MESSAGES: true });
+        help_channel.updateOverwrite(pilotRole, { SEND_MESSAGES: false });
         msg.member.roles.add(role);
         
         return help_channel;
