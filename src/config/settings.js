@@ -61,58 +61,53 @@ const settings = {
         },
         loading: {
             development: '<a:loading:861712249054822410>',
-            production: '<a:loading:861723188719255602>'
-        }
+            production: '<a:loading:861723188719255602>',
+        },
     },
     approved_sites: [
         {
             base_url: 'https://archidekt.com/',
             site_name: 'Archidekt',
-            domain: "archidekt",
-            tld: "com",
+            domain: 'archidekt',
+            tld: 'com',
             get emoji() {
-                return settings.emojis.site_logos[process.env.NODE_ENV]
-                    .archidekt;
+                return settings.emojis.site_logos[process.env.NODE_ENV].archidekt;
             },
         },
         {
             base_url: 'https://www.moxfield.com/',
             site_name: 'Moxfield',
-            domain: "moxfield",
-            tld: "com",
+            domain: 'moxfield',
+            tld: 'com',
             get emoji() {
-                return settings.emojis.site_logos[process.env.NODE_ENV]
-                    .moxfield;
+                return settings.emojis.site_logos[process.env.NODE_ENV].moxfield;
             },
         },
         {
             base_url: 'https://tappedout.net/',
             site_name: 'TappedOut',
-            domain: "tappedout",
-            tld: "net",
+            domain: 'tappedout',
+            tld: 'net',
             get emoji() {
-                return settings.emojis.site_logos[process.env.NODE_ENV]
-                    .tappedout;
+                return settings.emojis.site_logos[process.env.NODE_ENV].tappedout;
             },
         },
         {
             base_url: 'https://deckstats.net/',
             site_name: 'DeckStats',
-            domain: "deckstats",
-            tld: "net",
+            domain: 'deckstats',
+            tld: 'net',
             get emoji() {
-                return settings.emojis.site_logos[process.env.NODE_ENV]
-                    .deckstats;
+                return settings.emojis.site_logos[process.env.NODE_ENV].deckstats;
             },
         },
         {
             base_url: 'https://aetherhub.com/',
             site_name: 'AetherHub',
-            domain: "aetherhub",
-            tld: "com",
+            domain: 'aetherhub',
+            tld: 'com',
             get emoji() {
-                return settings.emojis.site_logos[process.env.NODE_ENV]
-                    .aetherhub;
+                return settings.emojis.site_logos[process.env.NODE_ENV].aetherhub;
             },
         },
     ],
@@ -134,9 +129,7 @@ export default {
         if (NODE_ENV === 'development' || NODE_ENV === 'production') {
             return settings.servers[NODE_ENV];
         } else {
-            throw new Error(
-                'server() method: Environment variable: "NODE_ENV" has unknown value.'
-            );
+            throw new Error('server() method: Environment variable: "NODE_ENV" has unknown value.');
         }
     },
     image: (arg) => {

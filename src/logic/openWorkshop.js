@@ -28,18 +28,19 @@ const openWorkshop = async ({ msg, fields, suffix, i = 0 }) => {
             details: {
                 workshop_tag: suffix,
                 workshop_id: help_channel.id,
-                msg // just need msg for the user info
+                msg, // just need msg for the user info
             },
         });
-        
-        // setting up role
+
+        // setting up roles and permissions for the created channel
         const role = await guild.roles.create({ data: { name: `role-${suffix}` } });
-        const pilotRole = guild.roles.cache.find(x => x.name === "Pilot");
-        const moderatorRole = guild.roles.cache.find(x => x.name === "Moderator");
-        const adminRole = guild.roles.cache.find(x => x.name === "Admin");
-        const tunerRole = guild.roles.cache.find(x => x.name === "Tuner");
-        const proTunerRole = guild.roles.cache.find(x => x.name === "Pro Tuner");
-        const leadTunerRole = guild.roles.cache.find(x => x.name === "Lead Tuner");
+
+        const pilotRole = guild.roles.cache.find((x) => x.name === 'Pilot');
+        const moderatorRole = guild.roles.cache.find((x) => x.name === 'Moderator');
+        const adminRole = guild.roles.cache.find((x) => x.name === 'Admin');
+        const tunerRole = guild.roles.cache.find((x) => x.name === 'Tuner');
+        const proTunerRole = guild.roles.cache.find((x) => x.name === 'Pro Tuner');
+        const leadTunerRole = guild.roles.cache.find((x) => x.name === 'Lead Tuner');
 
         help_channel.updateOverwrite(role, { SEND_MESSAGES: true });
         help_channel.updateOverwrite(pilotRole, { SEND_MESSAGES: false });
@@ -49,11 +50,11 @@ const openWorkshop = async ({ msg, fields, suffix, i = 0 }) => {
         leadTunerRole && help_channel.updateOverwrite(leadTunerRole, { SEND_MESSAGES: true });
         proTunerRole && help_channel.updateOverwrite(proTunerRole, { SEND_MESSAGES: true });
         msg.member.roles.add(role);
-        
+
         return help_channel;
     } catch (e) {
         if (e.code === 50035 && i !== 2) {
-            return await openWorkshop({author, fields, suffix, i: i + 1})
+            return await openWorkshop({ msg, fields, suffix, i: i + 1 });
         }
         console.log(e);
     }

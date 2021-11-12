@@ -16,14 +16,11 @@ export default async ({ msg }) => {
         });
 
         if (!user) {
-            msg.channel.stopTyping();
             return Response.reject({
                 msg,
                 ref: 'no_score',
             });
         }
-
-        msg.channel.stopTyping();
 
         Response.sendEmbed({
             ref: 'points',
@@ -35,5 +32,7 @@ export default async ({ msg }) => {
         });
     } catch (err) {
         console.log(err);
+    } finally {
+        msg.channel.stopTyping();
     }
 };

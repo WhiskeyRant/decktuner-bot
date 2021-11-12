@@ -23,21 +23,21 @@ export default async ({ msg }) => {
             });
         }
 
-
         const guild = client.guilds.cache.get(settings.server());
         const top_user_data = await guild.members.fetch(leaderboard[0].user_id);
 
         Response.sendEmbed({
-            ref: "leaderboard",
+            ref: 'leaderboard',
             msg,
             details: {
                 leaderboard,
                 time_parameter,
-                top_user: top_user_data
-            }
-        })
-        msg.channel.stopTyping();
+                top_user: top_user_data,
+            },
+        });
     } catch (err) {
         console.log(err);
+    } finally {
+        msg.channel.stopTyping();
     }
 };

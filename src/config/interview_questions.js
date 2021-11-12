@@ -15,7 +15,7 @@ export default [
     },
     {
         question:
-            "Perfect, now tell us who your commander is along with partners or companions.\nSeparate each commander's name with a plus sign (+) or with a new line (shift+enter).\nYou can use an autofill search although the exact name will be more accurate to the commander you're looking for.",
+            "Perfect, now tell us who your commander is along with partners.\nSeparate each commander's name with a plus sign (+) or with a new line (shift+enter).\nYou can use an autofill search although the exact name will be more accurate to the commander you're looking for.",
         key: 'commander',
     },
     {

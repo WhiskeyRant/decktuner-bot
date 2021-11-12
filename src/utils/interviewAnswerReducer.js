@@ -74,7 +74,6 @@ const interviewAnswerReducer = async ({ content, key, channel }) => {
         });
 
         please_wait_msg.delete();
-        channel.stopTyping();
 
         const { choice, timed_out } = await collectClick({
             buttoned_msg: edited_question,
@@ -85,7 +84,7 @@ const interviewAnswerReducer = async ({ content, key, channel }) => {
             details: {
                 expired: timed_out,
                 user: channel.recipient,
-                choice
+                choice,
             },
         });
 
@@ -140,6 +139,8 @@ const interviewAnswerReducer = async ({ content, key, channel }) => {
         };
     } catch (e) {
         console.log(e);
+    } finally {
+        channel.stopTyping();
     }
 };
 
