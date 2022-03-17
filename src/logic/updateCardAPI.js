@@ -21,6 +21,7 @@ const updateCardAPI = async ({ msg }) => {
 
         // get rid of unnecessary cards
         const legends = data.filter((x) => {
+            if (!x.type_line) return;
             const type_line = x.type_line.toLowerCase();
             const real_card = Object.entries(x.legalities).some(
                 ([format, legality]) => legality === 'legal' && format !== 'future'
@@ -65,7 +66,8 @@ const updateCardAPI = async ({ msg }) => {
         msg.channel.send(
             `✅ Finished submitting to the database. There were ${total_additions} new additions, resulting in ${total_count} total valid commanders available.`
         );
-    } catch (e) {
+    } catch (e) {        
+        msg.channel.send(`Something went wrong.`);
         console.log(e);
     }
 };
