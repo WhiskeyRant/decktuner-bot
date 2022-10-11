@@ -19,11 +19,7 @@ export default () => {
         workshop_suffix = getTag(highest_tag);
     }
 
-    if (workshop_suffix == 999) {
-        workshop_suffix = 1;
-    } else if (workshop_suffix >= 1) {
-        workshop_suffix++;
-    }
+    workshop_suffix++;
 
-    return workshop_suffix.toString().padStart(3, '0');
+    return workshop_suffix.toString();
 };
