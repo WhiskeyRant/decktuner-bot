@@ -15,7 +15,7 @@
 ### Interview Process
 - Once a user types `!tune` the interviewing process will begin
 	- Users are limited to 1 workshop per person, and they will not be able to initiate another interview until the existing interview is complete. Send `!cancel` to the bot directly to be able to cancel the current interview. You will then need to restart the process from the beginning to begin the interview again.
-- The interview consists of 6 questions, each with their own requirements
+- The interview consists of 7 questions, each with their own requirements
 	-  Decklist Link
 		- Answer must contain maximum of 100 characters.
 		- Answer must be a valid link to one of the approved websites.
@@ -29,14 +29,15 @@
 			- Partnered commanders must be sent with each commander on a separate line -OR- separated by a plus sign (+)
 	- Desired Experience
 		- Users are referred to the guide on the website to answer with.
-		- Answer must contain a maximum of 20 characters
+		- Answer must contain a maximum of 20 characters*Increase or remove*
 	- Budget
 		- Answer must contain a maximum of 10 characters.
-		- Left vague on purpose to allow the user to decide what they want to do.
 	- Deck Goals
 		- Answer must contain a maximum of 400 characters.
 	- Tuning Goals
 		- Answer must contain a maximum of 400 characters.
+	- Tip offered*Add*
+		- In USD
 - Once the interview is complete, the user will be prompted to confirm the responses in the form of a template of what the tuning board message will look like. They can then reject or confirm. 
 	- Confirm will mean the interview process is over and the workshop has been created
 	- Reject will mean that the interview process must be restarted from the beginning.
