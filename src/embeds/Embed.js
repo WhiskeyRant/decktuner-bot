@@ -278,7 +278,7 @@ export default class Embed {
         }
 
         this.embed.footer = {
-            text: `Question ${i + 1} / ${6}`,
+            text: `Question ${i + 1} / ${7}`,
         };
 
         this.embed.image = {
