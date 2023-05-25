@@ -37,12 +37,13 @@ const endInterview = async ({ intro_msg, answers, msg }) => {
             msg.author.send(
                 `✅ Your workshop has been created and named **#workshop-${workshop_suffix}**. You can go to the #tuning-board channel to see your tuning request which includes a link to your channel. You can also use the ctrl+k command and type in your workshop number to directly search for your designated workshop channel.`
             );
-
+            
             const created_room = await openWorkshop({
                 msg: msg,
                 fields: answers,
                 suffix: workshop_suffix,
             });
+            
             const bounty_board = client.channels.cache.get(settings.channel('bounty_board'));
             const [[user], bounty_board_post] = await Promise.all([
                 createUser({
