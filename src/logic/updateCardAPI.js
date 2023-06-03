@@ -40,12 +40,13 @@ const updateCardAPI = async ({ msg }) => {
                 (x.image_uris || x.card_faces)
             );
         });
+
         msg.channel.send(
             `${settings.emoji(
                 'loading'
             )} Finished fetch from Scryfall API, now submitting data to database.`
         );
-
+        
         // filter out unnecessary data for each card
         const formatted_legends = legends.map((x) => ({
             name: x.name,

@@ -275,16 +275,41 @@ export const addCard = async ({ card, cards }) => {
                 },
             });
         } else if (cards) {
-            return Promise.all(
-                cards.map(async (x) =>
-                    Card.findOrCreate({
-                        where: { scryfall_id: x.scryfall_id },
-                        defaults: {
-                            ...x,
-                        },
-                    })
-                )
-            );
+
+            const scryfallIds = cards.map((card) => card.scryfall_id);
+            let allIds = [];
+
+            try {
+                const cardIds = await Card.findAll({ attributes: ['scryfall_id'] });
+                allIds = cardIds.map((card) => card.scryfall_id);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+
+            const notIncludedValues = scryfallIds.filter((id) => !allIds.includes(id));
+            const filteredCards = cards.filter((card) => notIncludedValues.includes(card.scryfall_id));
+
+            let createdCards = [];
+
+            try {
+                createdCards = await Card.bulkCreate(filteredCards);
+                console.log(`Inserted ${createdCards.length} cards into the Card table`);
+              } catch (error) {
+                console.error('Error inserting cards:', error);
+            }
+
+            return Promise.resolve(createdCards);
+
+            // return Promise.all(
+            //     filteredCards.map(async (x) =>
+            //         Card.findOrCreate({
+            //             where: { scryfall_id: x.scryfall_id },
+            //             defaults: {
+            //                 ...x,
+            //             },
+            //         })
+            //     )
+            // );
         }
     } catch (e) {
         console.log(e);
