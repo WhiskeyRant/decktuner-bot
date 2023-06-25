@@ -21,7 +21,7 @@ const collectAnswer = async ({ question, channel, i, questions_length, user }) =
 
         const collected = await channel.awaitMessages((response) => response, {
             max: 1,
-            time: 3 * 60 * 1000,
+            time: 10 * 60 * 1000,
         });
 
         const closing =
