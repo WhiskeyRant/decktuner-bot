@@ -41,7 +41,8 @@ export default [
         key: 'tuning_goals',
     },
     {
-        question: `Tuning a deck can take a lot of time and effort. How much would you be willing to tip your tuner if they do a great job? \n*Tipping is not required, but it may help attract a tuner to your workshop if you offer a tip.*
+        question: `Tuning a deck can take a lot of time and effort. How much would you be willing to tip your tuner if they do a great job?
+        \n*Tipping is not required, but it may help attract a tuner to your workshop if you offer a tip.*
         \n*Our tuners use trusted payment services for their tip jars and will provide a link upon tuning completion. 100% of your tip will go to your tuner.*` ,
         key: 'tip_amount',
     },
