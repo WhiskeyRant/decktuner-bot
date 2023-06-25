@@ -4,7 +4,7 @@ export default [
     {
         key: 'decklist',
         question:
-            "Thanks for using DeckTuner! Let's get started. First, paste a link to your deck in the message box below using one of the following approved deck builder sites:",
+            "Welcome to DeckTuner! Let's get started. First, paste a link to your deck in the message box below using one of the following approved deck builder sites:",
         details: {
             title: '\u200b',
             body: settings
@@ -15,33 +15,35 @@ export default [
     },
     {
         question:
-            "Perfect, now tell us who your commander is along with partners.\nSeparate each commander's name with a plus sign (+) or with a new line (shift+enter).\nYou can use an autofill search although the exact name will be more accurate to the commander you're looking for.",
+            "Perfect, now tell me who is commanding your deck.\nSeparate each commander's name with a plus sign (+) if you have partners. Please check your spelling if I can't find your commander. Keep in mind that new cards may not be in my database yet. You may need to try again in a few days.",
         key: 'commander',
     },
     {
-        question: `Ok, now lets choose what kind of multiplayer experience you want this deck to create. Social, Casual, Competitive, or cEDH. Refer to [our list of categories here](https://docs.google.com/document/d/13ni10EIW3hvKNdKXSLUHo2uBaQOn-Y7A4Pxwo1IY8mU/edit) if you're not sure.`,
+        question: `Ok, now lets choose what kind of multiplayer experience you want this deck to create. On a scale of 1-10, with 1 being *I don't care who wins, I just want to have fun playing thematic cards' and 10 being *I want to win at all costs, regardless if anyone is having fun*, what number are you trying to get to?`,
         key: 'desired_experience',
     },
     {
         question: [
-            `Got it. Now set your budget for **changes and upgrades only**. If you also have a spending limit per card you can list that after the changes budget separated by “/”.`,
-            `Please use your preferred currency denotations.`,
-            `Example:`,
+            `Got it. Now set your budget for **changes and upgrades**. If you have a **per card** spending limit, you can add that after the changes budget and separate them with “/”.`,
+            `*Please convert all currency to USD*.`,
+            `**Example:**`,
             '```$50/$10```',
-            `If your entire deck needs to stay under a total budget, be sure to mention that in the question about tuning goals later. If you’re a supreme being with no financial restrictions just say **"No budget"**.`,
+            `If your entire deck needs to stay under a total budget, be sure to mention that in the question about tuning goals later. If you're a supreme being with no financial restrictions just say **"No budget"**.`,
         ].join('\n'),
         key: 'budget',
     },
     {
-        question: `Nice, we can work with that. Now, in a few sentences, describe how you want this deck to work and what [sub category](https://docs.google.com/document/d/13ni10EIW3hvKNdKXSLUHo2uBaQOn-Y7A4Pxwo1IY8mU/edit) you would like to target. If you're not exactly sure, try answering the following questions: How do you want to win? What's the overall strategy? Is it built around the commander(s) or a certain set of cards?`,
+        question: `Now, in a few sentences, describe how you want this deck to work. For example: *What's the overall strategy? How does it use the commander? How do you want to win games?*`,
         key: 'deck_goals',
     },
     {
-        question: `Sounds good. Now tell us what you'd like the tuners to help you with. It can be anything from “upgrade it to a competitive deck” to “help me find more Nirvana references for my janky tribute deck.`,
+        question: `Sounds good. Now tell me what you'd like a tuner to help you with. What are the main issues you're having? For example: *Does it feel too slow or underpowered? Does it run out of steam or have trouble closing out games?*`,
         key: 'tuning_goals',
     },
     {
-        question: `How much would you be willing to tip your tuner if they do a great job?`,
+        question: `Tuning a deck can take a lot of time and effort. How much would you be willing to tip your tuner if they do a great job?` ,
+            `*Tipping is not required, but it may help attract a tuner to your workshop if you offer a tip?*` ,
+            `*Our tuners use trusted payment services for their tip jars and will provide a link upon tuning completion. 100% of your tip will go to your tuner.*` ,
         key: 'tip_amount',
     },
 ];
