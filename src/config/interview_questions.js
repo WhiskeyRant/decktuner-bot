@@ -19,7 +19,7 @@ export default [
         key: 'commander',
     },
     {
-        question: `Ok, now lets choose what kind of multiplayer experience you want this deck to create. On a scale of 1-10, with 1 being *I don't care who wins, I just want to have fun playing thematic cards' and 10 being *I want to win at all costs, regardless if anyone is having fun*, what number are you trying to get to?`,
+        question: `Ok, now lets choose what kind of multiplayer experience you want this deck to create. On a scale of 1-10, with 1 being *I don't care who wins, I just want to have fun playing thematic cards* and 10 being *I want to win at all costs, regardless if anyone is having fun*, what number are you trying to get to?`,
         key: 'desired_experience',
     },
     {
@@ -41,9 +41,9 @@ export default [
         key: 'tuning_goals',
     },
     {
-        question: `Tuning a deck can take a lot of time and effort. How much would you be willing to tip your tuner if they do a great job?` ,
-            `*Tipping is not required, but it may help attract a tuner to your workshop if you offer a tip?*` ,
-            `*Our tuners use trusted payment services for their tip jars and will provide a link upon tuning completion. 100% of your tip will go to your tuner.*` ,
+        question: `Tuning a deck can take a lot of time and effort. How much would you be willing to tip your tuner if they do a great job?
+        \n*Tipping is not required, but it may help attract a tuner to your workshop if you offer a tip.*
+        \n*Our tuners use trusted payment services for their tip jars and will provide a link upon tuning completion. 100% of your tip will go to your tuner.*` ,
         key: 'tip_amount',
     },
 ];
