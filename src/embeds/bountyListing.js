@@ -61,6 +61,11 @@ export default {
                     value: `<#${channel}>`,
                     inline: true,
                 },
+                {
+                    name: 'Tip Amount',
+                    value: `${fields.find((x) => x.key == 'tip_amount').content}`,
+                    inline: true,
+                },
             ]),
             thumbnail: {
                 url: fields.find((x) => x.key == 'commander').details.art_image,

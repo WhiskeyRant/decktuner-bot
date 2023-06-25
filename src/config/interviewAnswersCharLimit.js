@@ -23,4 +23,8 @@ export default [
         key: 'tuning_goals',
         max_length: 400,
     },
+    {
+        key: 'tip_amount',
+        max_length: 10,
+    },
 ];

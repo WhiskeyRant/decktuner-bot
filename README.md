@@ -5,17 +5,15 @@
 	- See "Interview Process"
 - Workshops are where pilots can seek compartmentalized help from tuners.
 - Any amount of tuners can participate, but other pilots can only view the channel
-	- Each tuner that participates in a workshop will be added to a list of active tuners participating in that workshop. This is important to note for the feedback process. See "Feedback Process"
+	- Each tuner that participates in a workshop will be added to a list of active tuners participating in that workshop.
 - To close a workshop, `!close` or `!forceclose` commands must be used
-- Once a workshop is closed, the feedback process will begin
-	- See "Feedback Process"
 - Workshops are created in the "WORKSHOPS" category
 	- Since each category has a limit of 50 channels, there are 3 workshop categories set in place in case of overflow
 
 ### Interview Process
 - Once a user types `!tune` the interviewing process will begin
 	- Users are limited to 1 workshop per person, and they will not be able to initiate another interview until the existing interview is complete. Send `!cancel` to the bot directly to be able to cancel the current interview. You will then need to restart the process from the beginning to begin the interview again.
-- The interview consists of 6 questions, each with their own requirements
+- The interview consists of 7 questions, each with their own requirements
 	-  Decklist Link
 		- Answer must contain maximum of 100 characters.
 		- Answer must be a valid link to one of the approved websites.
@@ -29,21 +27,19 @@
 			- Partnered commanders must be sent with each commander on a separate line -OR- separated by a plus sign (+)
 	- Desired Experience
 		- Users are referred to the guide on the website to answer with.
-		- Answer must contain a maximum of 20 characters
+		- Answer must contain a maximum of 20 characters*Increase or remove*
 	- Budget
 		- Answer must contain a maximum of 10 characters.
-		- Left vague on purpose to allow the user to decide what they want to do.
 	- Deck Goals
 		- Answer must contain a maximum of 400 characters.
 	- Tuning Goals
 		- Answer must contain a maximum of 400 characters.
+	- Tip offered*Add*
+		- In USD
 - Once the interview is complete, the user will be prompted to confirm the responses in the form of a template of what the tuning board message will look like. They can then reject or confirm. 
 	- Confirm will mean the interview process is over and the workshop has been created
 	- Reject will mean that the interview process must be restarted from the beginning.
 
-### Feedback Process
-- Once the `!close` command has been sent in a workshop by the chosen pilot, the feedback process will begin
-	- The user will be asked for feedback on each participating tuner. Once the process is complete, the workshop will be closed. 
 	
 ### Pro Tuner Promotion
 - anytime a user gets points that would put their score past 30, they will get automatically promoted to a Pro Tuner role
@@ -80,9 +76,8 @@
 ## Known Issues
 | Status |Issue |
 |--|--|
-|Can't fix; discord bug| When a workshop is closed, the associated channel will still remain in the channel list despite being deleted. You will be able to click on the channel, but will see a weird representation of the channel with a red bar at the bottom of the UI |
+|High Priority| When using the "!api" command, the server is unnable to connect to and update the database.
 |Low priority |When using the !leaderboard command, if the top ranking user is not in the server or if they are in the server but they haven't posted a message since they've joined the server, then the command will return an empty message and log an error. Low priority issue because it's very unlikely that a top ranking user will have left the server.|
-|Low priority |The bot assumes that all pilots have the "Pilot" role when they create a workshop. This comes into conflict with certain things like the pilot attempting to close the workshop. However this is alleviated by using 3rd party bots to assign the role. |
 #### Note: This list is incomplete. There might be known issues that haven't been added to this list yet. 
 
 
