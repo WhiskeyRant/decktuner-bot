@@ -11,7 +11,8 @@ const openWorkshop = async ({ msg, fields, suffix, i = 0 }) => {
             parent: settings.channel('workshop_category')[i],
         });
         const starting_msg = await help_channel.send(
-            `${msg.author} Your workshop has been created and a tuner will contact you soon. Thanks for using DeckTuner!`,
+            `${msg.author} Your workshop has been created and a tuner will contact you soon. Thanks for using DeckTuner!
+            \n**Be sure to turn on notifications so you will know when a tuner selects your workshop**`,
             {
                 embed: bountyListing.create({
                     author: msg.author,
