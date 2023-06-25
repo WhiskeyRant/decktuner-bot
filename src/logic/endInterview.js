@@ -35,7 +35,11 @@ const endInterview = async ({ intro_msg, answers, msg }) => {
         if (choice === 1) {
             const workshop_suffix = getWorkshopTag();
             msg.author.send(
-                `✅ Your workshop has been created and named **#workshop-${workshop_suffix}**. You can go to the #tuning-board channel to see your tuning request which includes a link to your channel. You can also use the ctrl+k command and type in your workshop number to directly search for your designated workshop channel.`
+                `✅ Your workshop has been created and named **#workshop-${workshop_suffix}**. You can go to the #tuning-board channel to see your tuning request which includes a link to your workshop channel.
+
+                \nYou can also use the ctrl+k command and type in your workshop number to directly search for your designated workshop channel.
+
+                \n**Be sure to turn on notifications so you will know when your workshop gets a tuner.**`
             );
             
             const created_room = await openWorkshop({
