@@ -9,7 +9,7 @@ export default [
     },
     {
         key: 'desired_experience',
-        max_length: 20,
+        max_length: 400,
     },
     {
         key: 'budget',
