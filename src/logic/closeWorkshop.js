@@ -101,8 +101,9 @@ export default async ({ msg, force }) => {
         const post = await bounty_board.messages.fetch(workshop.toJSON().post_id);
 
         const channel_name = msg.channel.name;
-        const channel_tag = channel_name.slice(channel_name.length - 3);
+        const channel_tag = channel_name.slice(channel_name.length - 4);
 
+        await msg.guild.roles.fetch()
         const designated_pilot_role = msg.guild.roles.cache.find(
             (role) => role.name === `role-${channel_tag}`
         );
