@@ -100,6 +100,7 @@ export default async ({ msg, force }) => {
         const bounty_board = client.channels.cache.get(settings.channel('bounty_board'));
         const post = await bounty_board.messages.fetch(workshop.toJSON().post_id);
 
+        await msg.guild.roles.fetch()
         const channel_name = msg.channel.name;
         const channel_tag = channel_name.slice(channel_name.length - 4);
 
